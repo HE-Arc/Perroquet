@@ -323,3 +323,5 @@ fabric.properties
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/django,python,pycharm,vscode
+
+.DS_Store
