@@ -21,8 +21,8 @@ export default new Router({
     },
     {
       path: "/index",
-      name: "index",
-      component: () => import("./components/Index.vue")
+      name: "HelloWorld",
+      component: () => import("./components/HelloWorld.vue")
     },
   ]
 });
