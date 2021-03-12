@@ -1,11 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
-from .models import User
-from .models import Message
+from .models import User, Message
+from .serializers import MessageSerializer, PublicUserProfileSerializer
 
-from .serializers import MessageSerializer
-from .serializers import PublicUserProfileSerializer
 from rest_framework import generics, permissions, viewsets
 
 
@@ -29,6 +27,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
+
 
 
 class UserViewSet(viewsets.ViewSet):
