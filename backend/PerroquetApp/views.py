@@ -1,11 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
-from .models import User
-from .models import Message
+from .models import User, Message
+from .serializers import MessageSerializer, PublicUserProfileSerializer
 
-from .serializers import MessageSerializer
-from .serializers import PublicUserProfileSerializer
 from rest_framework import generics, permissions, viewsets
 
 
@@ -30,6 +28,34 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
+
+class UserViewSet(viewsets.ViewSet):
+    """
+    Example empty viewset demonstrating the standard
+    actions that will be handled by a router class.
+
+    If you're using format suffixes, make sure to also include
+    the `format=None` keyword argument for each action.
+    """
+
+    def list(self, request):
+        pass
+
+    def create(self, request):
+        pass
+
+    def retrieve(self, request, pk=None):
+        pass
+
+    def update(self, request, pk=None):
+        pass
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
 
 # class MessageList(generics.ListCreateAPIView):
 #     queryset = Message.objects.all()
