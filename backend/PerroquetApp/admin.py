@@ -7,8 +7,8 @@ from .models import Profile
 from .models import Follow
 
 # Register your models here.
-admin.register(Message,admin.site)
-# admin.register(User,admin.site)
-admin.register(Like,admin.site)
-admin.register(Profile,admin.site)
-admin.register(Follow,admin.site)
+admin.site.register(Message)
+# admin.site.register(User)
+admin.site.register(Like)
+admin.site.register(Profile)
+admin.site.register(Follow)

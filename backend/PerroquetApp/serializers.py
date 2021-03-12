@@ -11,14 +11,16 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
     profile = ProfileSerializer(read_only=True)
+
+
     class Meta:
         model = User
         fields = ('id','username','first_name', 'last_name', 'profile'
         )
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
-    # author = PublicUserProfileSerializer(read_only=True)
+    author = PublicUserProfileSerializer(read_only=True)
     class Meta:
         model = Message
-        fields = ('id','content','author'
+        fields = ('id','content','author', 'author'
         )

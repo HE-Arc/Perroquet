@@ -117,7 +117,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-PerroquetProject/.env
+.env
 .venv
 env/
 venv/
@@ -325,3 +325,5 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/django,python,pycharm,vscode
 
 .DS_Store
+
+backend/PerroquetProject/.env
