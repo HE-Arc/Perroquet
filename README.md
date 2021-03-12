@@ -1,3 +1,4 @@
+[![deployment](https://github.com/HE-Arc/Perroquet/actions/workflows/deploy.yml/badge.svg)](https://github.com/HE-Arc/Perroquet/actions/workflows/deploy.yml)
 # Perroquet
 Antoine Lestrade, Jonatan Baumgartner, Florian Feuillade
 

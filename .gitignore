@@ -117,7 +117,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-PerroquetProject/.env
+.env
 .venv
 env/
 venv/
