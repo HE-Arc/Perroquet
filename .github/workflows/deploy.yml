@@ -36,4 +36,4 @@ jobs:
     - name: ssh-known-host
       run: ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
     - name: capistrano execution
-      run: cap production deploy
+      run: bundle exec cap production deploy
