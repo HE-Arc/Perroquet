@@ -12,8 +12,8 @@ from PerroquetApp import views
 # ]
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'messages', views.MessageViewSet)
+router.register(r'users', views.UserViewSet,basename="yo1")
+router.register(r'messages', views.MessageViewSet,basename="yo2")
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
