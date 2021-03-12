@@ -6,6 +6,9 @@
 # server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
+server "perroquet.srvz-webapp.he-arc.ch", user: "poweruser", roles: %w{app db web}, port: 1450
+
+set :deploy_to, "/var/www/#{fetch(:application)}"
 
 
 

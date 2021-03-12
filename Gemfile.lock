@@ -3,12 +3,14 @@ GEM
   specs:
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
+    bcrypt_pbkdf (1.1.0)
     capistrano (3.16.0)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
       sshkit (>= 1.9.0)
     concurrent-ruby (1.1.8)
+    ed25519 (1.2.4)
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     net-scp (3.0.0)
@@ -23,7 +25,9 @@ PLATFORMS
   universal-darwin-20
 
 DEPENDENCIES
+  bcrypt_pbkdf
   capistrano
+  ed25519
 
 BUNDLED WITH
    2.2.14
