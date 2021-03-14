@@ -11,27 +11,30 @@
 
       <v-list>
         <v-list-item
-            v-for="[icon, text] in links"
-            :key="icon"
+            v-for="item in navItems"
+            :key="item.title"
             link
+            router
+            :to="item.link"
         >
           <v-list-item-icon>
-            <v-icon>{{ icon }}</v-icon>
+            <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ text }}</v-list-item-title>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
       <v-spacer></v-spacer>
       <v-list>
         <v-list-item link>
-          <v-list-item-icon>
-            <v-icon>mdi-login</v-icon>
+          <v-avatar v-if="userIsAuthenticated"></v-avatar>
+          <v-list-item-icon v-else>
+            <v-icon >mdi-login</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            Login
+            {{ userLogin }}
           </v-list-item-content>
         </v-list-item>
 
@@ -56,6 +59,31 @@ export default {
     ],
 
   }),
+
+  computed: {
+    navItems () {
+      let navItems = [
+        {icon: 'mdi-compass', title: 'Discover', link: '/'},
+      ]
+      if (this.userIsAuthenticated) {
+        navItems = [
+          {icon: 'mdi-home', title: 'Home', link: '/create'},
+          {icon: 'mdi-compass', title: 'Discover', link: '/edit'},
+          {icon: 'mdi-account-heart', title: 'Friends', link: '/'},
+          {icon: 'mdi-cog', title: 'Settings', link: '/'},
+        ]
+      }
+      return navItems
+    },
+    userIsAuthenticated () {
+      return true
+    },
+
+    userLogin(){
+      return this.userIsAuthenticated ? "Username" : "Login"
+    }
+
+  }
 }
 </script>
 
