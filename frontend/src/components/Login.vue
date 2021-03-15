@@ -20,7 +20,7 @@
       </v-form>
 
       <v-card-actions>
-        <a></a>
+        <router-link to="/signin">Sign in</router-link>
         <v-spacer></v-spacer>
         <v-btn type="submit" color="primary" :disabled="!valid">Submit</v-btn>
       </v-card-actions>
