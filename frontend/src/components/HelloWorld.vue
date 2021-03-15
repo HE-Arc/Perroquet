@@ -2,6 +2,9 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
+
+        <message></message>
+
         <v-img
           :src="require('../assets/logo.svg')"
           class="my-3"
@@ -92,9 +95,10 @@
 </template>
 
 <script>
+  import Message from "@/components/Message";
   export default {
     name: 'HelloWorld',
-
+    components: {Message},
     data: () => ({
       ecosystem: [
         {
