@@ -1,0 +1,26 @@
+# This is a basic workflow to help you get started with Actions
+
+name: quality
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  
+  sonarQubeTrigger:
+    name: SonarQube Trigger
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: SonarQube Scan
+      uses: kitabisa/sonarqube-action@master
+      with:
+        host: https://sonar.jojoc4.ch
+        login: 85a4c642199d27c98b571d03e0d2bf543ab88f0e
+        projectKey: perroquet
