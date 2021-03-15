@@ -19,9 +19,9 @@
       </v-form>
 
       <v-card-actions>
-        <router-link to="/signin">Login</router-link>
+        <router-link to="/signin">Sign in</router-link>
         <v-spacer></v-spacer>
-        <v-btn type="submit" color="primary" :disabled="!valid">Submit</v-btn>
+        <v-btn type="submit" color="primary" :disabled="!valid">Login</v-btn>
       </v-card-actions>
     </v-card-text>
 
