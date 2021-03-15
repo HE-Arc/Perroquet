@@ -28,13 +28,13 @@
       </v-list>
       <v-spacer></v-spacer>
       <v-list>
-        <v-list-item link>
+        <v-list-item link router :to="userLogin.link">
           <v-avatar v-if="userIsAuthenticated"></v-avatar>
           <v-list-item-icon v-else>
             <v-icon >mdi-login</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            {{ userLogin }}
+            {{ userLogin.title }}
           </v-list-item-content>
         </v-list-item>
 
@@ -76,11 +76,11 @@ export default {
       return navItems
     },
     userIsAuthenticated () {
-      return true
+      return false
     },
 
     userLogin(){
-      return this.userIsAuthenticated ? "Username" : "Login"
+      return this.userIsAuthenticated ? {title: "Username", link:"/profile"} : {title: "Login", link:"/login"}
     }
 
   }
