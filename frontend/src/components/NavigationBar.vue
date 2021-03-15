@@ -63,14 +63,14 @@ export default {
   computed: {
     navItems () {
       let navItems = [
-        {icon: 'mdi-compass', title: 'Discover', link: '/'},
+        {icon: 'mdi-compass', title: 'Discover', link: '/discover'},
       ]
       if (this.userIsAuthenticated) {
         navItems = [
-          {icon: 'mdi-home', title: 'Home', link: '/create'},
-          {icon: 'mdi-compass', title: 'Discover', link: '/edit'},
-          {icon: 'mdi-account-heart', title: 'Friends', link: '/'},
-          {icon: 'mdi-cog', title: 'Settings', link: '/'},
+          {icon: 'mdi-home', title: 'Home', link: '/home'},
+          {icon: 'mdi-compass', title: 'Discover', link: '/discover'},
+          {icon: 'mdi-account-heart', title: 'Friends', link: '/friends'},
+          {icon: 'mdi-cog', title: 'Settings', link: '/settings'},
         ]
       }
       return navItems
