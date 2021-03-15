@@ -1,5 +1,5 @@
 <template>
-$END$
+<v-card outlined elevation="10">SALUT</v-card>
 </template>
 
 <script>
