@@ -20,6 +20,7 @@
       </v-form>
 
       <v-card-actions>
+        <a></a>
         <v-spacer></v-spacer>
         <v-btn type="submit" color="primary" :disabled="!valid">Submit</v-btn>
       </v-card-actions>
@@ -48,10 +49,6 @@ export default {
       ],
       passwordRules: [
         v => !!v || 'Password is required',
-        v => (v && v.length >= 8) || 'Password must have 8+ characters',
-        v => /(?=.*[A-Z])/.test(v) || 'Must have one uppercase character',
-        v => /(?=.*\d)/.test(v) || 'Must have one number',
-        v => /([-_!@$%+=])/.test(v) || 'Must have one special character [-_!@#$%+=]'
       ],
     },
 
