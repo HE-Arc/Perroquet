@@ -14,7 +14,6 @@
             :rules="rules.passwordRules"
             :type="passwordShow ? 'text' : 'password'"
             label="Password"
-            hint="At least 8 characters"
             @click:append="passwordShow = !passwordShow"
         ></v-text-field>
       </v-form>
