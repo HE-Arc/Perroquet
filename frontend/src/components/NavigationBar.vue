@@ -55,7 +55,7 @@ export default {
       ['mdi-compass', 'Discover'],
       ['mdi-account-heart', 'Friends'],
       ['mdi-cog', 'Settings'],
-
+      ['mdi-folder-plus', 'Signin']
     ],
 
   }),
@@ -64,6 +64,7 @@ export default {
     navItems () {
       let navItems = [
         {icon: 'mdi-compass', title: 'Discover', link: '/'},
+        {icon: 'mdi-folder-plus', title: 'Signin', link:'/signin'}
       ]
       if (this.userIsAuthenticated) {
         navItems = [
@@ -76,7 +77,7 @@ export default {
       return navItems
     },
     userIsAuthenticated () {
-      return true
+      return false
     },
 
     userLogin(){
