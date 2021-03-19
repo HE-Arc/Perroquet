@@ -13,13 +13,13 @@ from . import views
 # ]
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet,basename="yo1")
-router.register(r'messages', views.MessageViewSet,basename="yo2")
+router.register(r'users', views.UserViewSet,'user')
+router.register(r'messages', views.MessageViewSet,'message')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
+    path('v1/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('token-auth/', obtain_auth_token, name='api_token_auth'),
     path('hello/', views.HelloView.as_view(), name='hello'),
