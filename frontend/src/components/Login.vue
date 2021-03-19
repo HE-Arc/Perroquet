@@ -31,8 +31,6 @@
 
 <script>
 
-const BASE_URL = process.env.VUE_APP_BASEURL
-import axios from 'axios';
 
 export default {
   name: "Login",
@@ -57,22 +55,7 @@ export default {
   }),
   methods: {
     submit() {
-      axios.post( BASE_URL + 'token-auth/', {'Access-Control-Allow-Origin': '*',},
-      {
-          username: this.fields.username,
-          password: this.fields.password,
-          
-      }).then(response=>{
-          if(response.status==400){
-            alert("Login incorrect");
-          }else if(response.status==200){
-            console.log(response);
-          }
-            
-      }).catch(e => {
-          //affichage erreur
-          this.errors.push(e)
-      })
+      this.$store.dispatch("login");
     },
   },
 }
