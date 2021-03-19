@@ -16,13 +16,13 @@ export default new Router({
     },
     {
       path: "/signin",
-      name: "signin",
+      name: "Signin",
       component: () => import("./components/Signin.vue")
-    }
+    },
     {
       path: "/login",
       name: "Login",
       component: () => import("./components/Login.vue")
-    },
+    }
   ]
 });
