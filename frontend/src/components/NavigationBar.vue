@@ -28,13 +28,13 @@
       </v-list>
       <v-spacer></v-spacer>
       <v-list>
-        <v-list-item link>
+        <v-list-item link router :to="userLogin.link">
           <v-avatar v-if="userIsAuthenticated"></v-avatar>
           <v-list-item-icon v-else>
             <v-icon >mdi-login</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            {{ userLogin }}
+            {{ userLogin.title }}
           </v-list-item-content>
         </v-list-item>
 
@@ -55,7 +55,7 @@ export default {
       ['mdi-compass', 'Discover'],
       ['mdi-account-heart', 'Friends'],
       ['mdi-cog', 'Settings'],
-
+      ['mdi-folder-plus', 'Signin']
     ],
 
   }),
@@ -63,24 +63,24 @@ export default {
   computed: {
     navItems () {
       let navItems = [
-        {icon: 'mdi-compass', title: 'Discover', link: '/'},
+        {icon: 'mdi-compass', title: 'Discover', link: '/discover'},
       ]
       if (this.userIsAuthenticated) {
         navItems = [
-          {icon: 'mdi-home', title: 'Home', link: '/create'},
-          {icon: 'mdi-compass', title: 'Discover', link: '/edit'},
-          {icon: 'mdi-account-heart', title: 'Friends', link: '/'},
-          {icon: 'mdi-cog', title: 'Settings', link: '/'},
+          {icon: 'mdi-home', title: 'Home', link: '/home'},
+          {icon: 'mdi-compass', title: 'Discover', link: '/discover'},
+          {icon: 'mdi-account-heart', title: 'Friends', link: '/friends'},
+          {icon: 'mdi-cog', title: 'Settings', link: '/settings'},
         ]
       }
       return navItems
     },
     userIsAuthenticated () {
-      return true
+      return false
     },
 
     userLogin(){
-      return this.userIsAuthenticated ? "Username" : "Login"
+      return this.userIsAuthenticated ? {title: "Username", link:"/profile"} : {title: "Login", link:"/login"}
     }
 
   }

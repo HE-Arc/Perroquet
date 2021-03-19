@@ -4,6 +4,7 @@
       <v-col cols="12">
 
         <message></message>
+        <login></login>
 
         <v-img
           :src="require('../assets/logo.svg')"
@@ -96,9 +97,10 @@
 
 <script>
   import Message from "@/components/Message";
+  import Login from "@/components/Login";
   export default {
     name: 'HelloWorld',
-    components: {Message},
+    components: {Login, Message},
     data: () => ({
       ecosystem: [
         {
