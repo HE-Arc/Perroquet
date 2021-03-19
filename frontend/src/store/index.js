@@ -9,13 +9,16 @@ const BASE_URL = process.env.VUE_APP_BASEURL
 
 //to handle state
 const state = {
-    token: "",
-    authenticated: false,
+    token: ""
 
 }
 
 //to handle state
-const getters = {}
+const getters = {
+    authenticated: state => {
+        return state.token!=""
+    }
+}
 
 //to handle actions
 const actions = {
@@ -28,8 +31,7 @@ const actions = {
             
             }).then( (response) =>{
                     console.log(response);
-                    commit('SET_TOKEN', response.data.token);
-                    commit('SET_AUTHENTICATED', true);
+                    commit('LOGIN', response.data.token);
                     resolve();            
             } , (error) => {
                 reject(error);
@@ -40,12 +42,15 @@ const actions = {
 
 //to handle mutations
 const mutations = {
-    SET_TOKEN(state, token) {
+    LOGIN(state, token) {
         state.token = token;
+        localStorage.setItem("token", token);
     },
-    SET_AUTHENTICATED(state, authenticated) {
-        state.authenticated = authenticated;
-    },
+    initialiseStore(state) {
+        if (localStorage.getItem('token')!=null) {
+          state.token = localStorage.getItem('token');
+        }
+      },
 }
 
 //export store module

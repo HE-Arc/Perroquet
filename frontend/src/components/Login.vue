@@ -59,7 +59,7 @@ export default {
     submit() {
       this.$store.dispatch("login", this.fields).then(() => {
         //TODO correct redirect
-        window.location.href = 'index';
+        
       }).catch(()=>{
         this.error = true
       });
