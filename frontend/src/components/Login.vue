@@ -21,7 +21,7 @@
       <v-card-actions>
         <router-link to="/signin">Sign in</router-link>
         <v-spacer></v-spacer>
-        <v-btn type="submit" color="primary" :disabled="!valid">Login</v-btn>
+        <v-btn type="submit" @click="submit" color="primary" :disabled="!valid">Login</v-btn>
       </v-card-actions>
     </v-card-text>
 
@@ -30,6 +30,10 @@
 </template>
 
 <script>
+
+const BASE_URL = process.env.VUE_APP_BASEURL
+import axios from 'axios';
+
 export default {
   name: "Login",
 
@@ -50,9 +54,27 @@ export default {
         v => !!v || 'Password is required',
       ],
     },
-
-
   }),
+  methods: {
+    submit() {
+      axios.post( BASE_URL + 'token-auth/', {'Access-Control-Allow-Origin': '*',},
+      {
+          username: this.fields.username,
+          password: this.fields.password,
+          
+      }).then(response=>{
+          if(response.status==400){
+            alert("Login incorrect");
+          }else if(response.status==200){
+            console.log(response);
+          }
+            
+      }).catch(e => {
+          //affichage erreur
+          this.errors.push(e)
+      })
+    },
+  },
 }
 </script>
 
