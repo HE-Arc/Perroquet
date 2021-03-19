@@ -59,7 +59,7 @@ export default {
     submit() {
       this.$store.dispatch("login", this.fields).then(() => {
         //TODO correct redirect
-        
+        this.$router.push("/index");
       }).catch(()=>{
         this.error = true
       });

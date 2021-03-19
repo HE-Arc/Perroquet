@@ -38,6 +38,10 @@ const actions = {
             });
         });
     },
+    logout({commit}){
+        commit('LOGOUT');
+        this.$router.push("index")
+    },
 }
 
 //to handle mutations
@@ -45,6 +49,10 @@ const mutations = {
     LOGIN(state, token) {
         state.token = token;
         localStorage.setItem("token", token);
+    },
+    LOGOUT(state){
+        state.token = "";
+        localStorage.setItem("token", "");
     },
     initialiseStore(state) {
         if (localStorage.getItem('token')!=null) {
