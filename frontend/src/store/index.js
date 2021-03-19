@@ -19,25 +19,22 @@ const getters = {}
 
 //to handle actions
 const actions = {
-    login({commit}){
-        axios.post( BASE_URL + 'token-auth/',
-        {
-            username: "test",
-            password: "yo",
-          
-        }).then(response=>{
-            if(response.status==400){
-                console.log(response);
-            }else if(response.status==200){
-                console.log(response);
-                commit('SET_TOKEN', response.data.token);
-                commit('SET_AUTHENTICATED', true);
-            }
+    login({commit}, fields){
+        return new Promise((resolve, reject) => {
+            axios.post( BASE_URL + 'token-auth/',
+            {
+                username: fields.username,
+                password: fields.password,
             
-        }).catch(e => {
-            //affichage erreur
-            this.errors.push(e)
-        })
+            }).then( (response) =>{
+                    console.log(response);
+                    commit('SET_TOKEN', response.data.token);
+                    commit('SET_AUTHENTICATED', true);
+                    resolve();            
+            } , (error) => {
+                reject(error);
+            });
+        });
     },
 }
 

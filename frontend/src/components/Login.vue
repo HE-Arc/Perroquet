@@ -55,7 +55,11 @@ export default {
   }),
   methods: {
     submit() {
-      this.$store.dispatch("login");
+      this.$store.dispatch("login", this.fields).then(() => {
+        alert("Logged in")
+      }).catch(()=>{
+        alert("error")
+      });
     },
   },
 }
