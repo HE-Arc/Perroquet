@@ -55,7 +55,7 @@ export default {
       ['mdi-compass', 'Discover'],
       ['mdi-account-heart', 'Friends'],
       ['mdi-cog', 'Settings'],
-
+      ['mdi-folder-plus', 'Signin']
     ],
 
   }),
