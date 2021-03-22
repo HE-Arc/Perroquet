@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import User, Message
-from .serializers import MessageSerializer, PublicUserProfileSerializer, UserSerializer
+from .serializers import MessageSerializer, PublicUserProfileSerializer, UserSerializer, CreateMessageSerializer
 
 
 class HelloView(APIView):
@@ -17,10 +17,14 @@ class HelloView(APIView):
             }
         return Response(content)
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(mixins.RetrieveModelMixin,
+                  mixins.ListModelMixin,
+                  mixins.UpdateModelMixin,
+                  mixins.DestroyModelMixin,
+                  viewsets.GenericViewSet):
 
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = PublicUserProfileSerializer
 
     # def create(self, request, *args, **kwargs):
     #     serializer = UserSerializer(data=request.data,context={'request': request})
@@ -59,16 +63,22 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     # permission_classes = [permissions.IsAuthenticated]
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.content = "blabla"
-        serializer = self.get_serializer(instance)
+    def create(self, request, *args, **kwargs):
+        serializer = CreateMessageSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
 
-    def list(self, request):
-        instances = Message.objects.all()
-        serializer = MessageSerializer(instances,many=True, context={'request': request})
-        return Response(serializer.data)
+    # def retrieve(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     instance.content = "blabla"
+    #     serializer = self.get_serializer(instance)
+    #     return Response(serializer.data)
+    #
+    # def list(self, request):
+    #     instances = Message.objects.all()
+    #     serializer = MessageSerializer(instances,many=True, context={'request': request})
+    #     return Response(serializer.data)
 
 
 # class MessageList(generics.ListCreateAPIView):

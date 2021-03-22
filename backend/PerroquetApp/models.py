@@ -10,8 +10,8 @@ class Message(models.Model):
     """Table schema to store articles."""
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="message")
     content = models.TextField()
-    replyTo = models.ForeignKey("PerroquetApp.Message", null=True, on_delete=models.SET_NULL, related_name="replyToMessage")
-
+    replyTo = models.ForeignKey("PerroquetApp.Message", blank=True,null=True,on_delete=models.SET_NULL, related_name="replyToMessage")
+    image = models.ImageField(upload_to ='img/%Y/%m/%d/',blank=True,null=True)
     def __str__(self):
         return '%s' % self.content
 
@@ -27,7 +27,7 @@ class Profile(models.Model):
     """Table schema to store profile."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
-    image = models.CharField(max_length=255)
+    image = models.ImageField(upload_to ='img/%Y/%m/%d/',blank=True,null=True)
     location = models.CharField(max_length=30, blank=True)
     birthDate = models.DateField(null=True, blank=True)
 

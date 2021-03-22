@@ -10,7 +10,7 @@ from django.db import models
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Profile
-        fields = ('id','bio'
+        fields = ('id','bio','image'
         )
 
 
@@ -21,6 +21,22 @@ class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('id','username','first_name', 'last_name', 'profile','url'
         )
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile')
+        # Unless the application properly enforces that this field is
+        # always set, the following could raise a `DoesNotExist`, which
+        # would need to be handled.
+        profile = instance.profile
+
+        print(profile_data)
+        profileSerializer = ProfileSerializer(data=profile_data)
+        if (profileSerializer.is_valid()):
+            profile.bio = profile_data.get('bio',profile.bio)
+            profile.image = profile_data.get('image',profile.image)
+            profile.save()
+
+        return super(PublicUserProfileSerializer, self).update(instance,validated_data)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,6 +49,10 @@ class UserSerializer(serializers.ModelSerializer):
     #     return User.objects.create_user(**validated_data)
 
 
+class CreateMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ['id','content','author','replyTo',]
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
     author = PublicUserProfileSerializer(read_only=True)
@@ -41,5 +61,5 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['id','content','author_id','author','replyTo','url',]
+        fields = ['id','content','image','author_id','author','replyTo','url',]
         # depth=1
