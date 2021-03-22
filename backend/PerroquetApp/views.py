@@ -1,7 +1,6 @@
 # Create your views here.
 
-from rest_framework import viewsets, mixins
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, mixins, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -10,7 +9,7 @@ from .serializers import MessageSerializer, PublicUserProfileSerializer, UserSer
 
 
 class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
         content = {
@@ -18,35 +17,41 @@ class HelloView(APIView):
             }
         return Response(content)
 
-class UserViewSet(mixins.CreateModelMixin,
-                        mixins.ListModelMixin,
-                        mixins.RetrieveModelMixin,
-                        viewsets.GenericViewSet):
+class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
-    # serializer_class = UserSerializer
+    serializer_class = UserSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = UserSerializer(data=request.data,context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = PublicUserProfileSerializer(instance=instance,context={'request': request})
-        return Response(serializer.data)
-
-    def list(self, request):
-        instances = User.objects.all()
-        serializer = PublicUserProfileSerializer(instances, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    def get_serializer_class(self):
-        if self.action == 'list' or self.action == 'retrieve':
-            return PublicUserProfileSerializer
-        if self.action == 'create':
-            return UserSerializer
+    # def create(self, request, *args, **kwargs):
+    #     serializer = UserSerializer(data=request.data,context={'request': request})
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(serializer.data)
+    #
+    # def retrieve(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     serializer = PublicUserProfileSerializer(instance=instance,context={'request': request})
+    #     return Response(serializer.data)
+    #
+    # def list(self, request):
+    #     instances = User.objects.all()
+    #     serializer = PublicUserProfileSerializer(instances, many=True, context={'request': request})
+    #     return Response(serializer.data)
+    #
+    # def update(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     serializer = PublicUserProfileSerializer(instance=instance,data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(serializer.data)
+    #
+    # def get_serializer_class(self):
+    #     if self.action == 'list' \
+    #             or self.action == 'retrieve'\
+    #             or self.action == 'update':
+    #         return PublicUserProfileSerializer
+    #     if self.action == 'create':
+    #         return UserSerializer
 
 
 class MessageViewSet(viewsets.ModelViewSet):

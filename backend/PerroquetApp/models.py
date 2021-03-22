@@ -26,7 +26,7 @@ class Like(models.Model):
 class Profile(models.Model):
     """Table schema to store profile."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField()
+    bio = models.TextField(blank=True)
     image = models.CharField(max_length=255)
     location = models.CharField(max_length=30, blank=True)
     birthDate = models.DateField(null=True, blank=True)
