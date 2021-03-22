@@ -67,18 +67,19 @@ const actions = {
                 });
         });
     },
-    getProfile({commit}, id){
-        if(id in state.profiles){
-            return state.profiles[id];
-        }else{
-            //TODO adjust profile route
-            axios.get(BASE_URL + "").then((response) => {
-                commit('ADDPROFILE', response.data);
-                return state.profiles[id];
-            }, (error) => {
-                console.error(error);
-            })
-        }
+    getProfile({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            if (state.profiles[id] !== undefined) {
+                resolve(state.profiles[id]);
+            } else {
+                axios.get(BASE_URL + "user/"+id+"/").then((response) => {
+                    commit('ADDPROFILE', response.data);
+                    resolve(state.profiles[id]);
+                }, (error) => {
+                    reject(error);
+                })
+            }
+        });
     },
 }
 
