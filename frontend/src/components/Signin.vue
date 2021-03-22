@@ -5,6 +5,7 @@
         <v-card outlined elevation="10">
           <v-card-title>Sign in</v-card-title>
           <v-card-text>
+            <v-alert v-if="error" color="red" type="warning">Error.</v-alert>
             <v-form v-model="valid">
               <v-text-field
                 v-model="fields.firstname"
@@ -56,7 +57,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
   name: "Signin",
@@ -64,6 +64,8 @@ export default {
   data: () => ({
     valid: false,
     show: false,
+    error: false,
+
     fields: {
       username: "",
       email: "",
@@ -97,21 +99,11 @@ export default {
 
   methods: {
     submit() {
-      axios.post('',
-      {
-          username: this.fields.username,
-          password: this.fields.password,
-          firstname: this.fields.firstname,
-          lastname: this.fields.lastname,
-          email: this.fields.email
-      }).then(response=>{
-          //si ok rediriger vers profil
-          if(response.status==200)
-            window.location = "/";
-      }).catch(e => {
-          //affichage erreur
-          this.errors.push(e)
-      })
+      this.$store.dispatch("register", this.fields).then(() => {
+        this.$router.push("/index");
+      }).catch(()=>{
+        this.error = true
+      });
     },
   },
 };
