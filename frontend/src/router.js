@@ -10,19 +10,19 @@ export default new Router({
       redirect: '/index'
     },
     {
-      path: "/create",
-      name: "create",
-      component: () => import("./components/Create.vue")
-    },
-    {
-      path: "/edit/:id",
-      name: "edit",
-      component: () => import("./components/Edit.vue")
-    },
-    {
       path: "/index",
       name: "HelloWorld",
       component: () => import("./components/HelloWorld.vue")
     },
+    {
+      path: "/signin",
+      name: "Signin",
+      component: () => import("./components/Signin.vue")
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: () => import("./components/Login.vue")
+    }
   ]
 });

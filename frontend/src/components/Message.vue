@@ -1,10 +1,10 @@
 <template>
-<h5>lol2</h5>
+<v-card outlined elevation="10">SALUT</v-card>
 </template>
 
 <script>
 export default {
-  name: "Edit"
+name: "Message"
 }
 </script>
 
