@@ -9,8 +9,8 @@ const BASE_URL = process.env.VUE_APP_BASEURL
 
 //to handle state
 const state = {
-    token: ""
-
+    token: "",
+    profiles: [],
 }
 
 //to handle state
@@ -28,7 +28,6 @@ const actions = {
                 {
                     username: fields.username,
                     password: fields.password,
-
                 }).then((response) => {
                     commit('LOGIN', response.data.token);
                     resolve();
@@ -51,7 +50,6 @@ const actions = {
                     email: fields.email,
                     first_name: fields.firstname,
                     last_name: fields.lastname
-
                 }).then(() => {
                     resolve();
                 }, (error) => {
@@ -61,7 +59,6 @@ const actions = {
                 {
                     username: fields.username,
                     password: fields.password,
-
                 }).then((response) => {
                     commit('LOGIN', response.data.token);
                     resolve();
@@ -69,7 +66,21 @@ const actions = {
                     reject(error);
                 });
         });
-    }
+    },
+    getProfile({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            if (state.profiles[id] !== undefined) {
+                resolve(state.profiles[id]);
+            } else {
+                axios.get(BASE_URL + "user/"+id+"/").then((response) => {
+                    commit('ADDPROFILE', response.data);
+                    resolve(state.profiles[id]);
+                }, (error) => {
+                    reject(error);
+                })
+            }
+        });
+    },
 }
 
 //to handle mutations
@@ -86,6 +97,9 @@ const mutations = {
         if (localStorage.getItem('token') != null) {
             state.token = localStorage.getItem('token');
         }
+    },
+    ADDPROFILE(state, profile) {
+        state.profiles[profile.id] = profile;
     },
 }
 

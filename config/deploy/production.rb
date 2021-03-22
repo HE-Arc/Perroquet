@@ -23,9 +23,10 @@ namespace :django do
     task :migrate do
         on roles(:web) do |h|
             execute "cp #{shared_path}/.env #{release_path}/backend/PerroquetProject/.env"
-            execute "source #{venv_path}/bin/activate && python3 #{release_path}/backend/manage.py migrate"
+            execute "source #{venv_path}/bin/activate && python3 #{release_path}/backend/manage.py migrate && cd #{release_path}/backend &&python3 #{release_path}/backend/manage.py collectstatic --noinput"
 	    end
     end
+    
 end
 
 after 'django:migrate', 'uwsgi:restart'
