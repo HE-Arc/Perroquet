@@ -1,19 +1,18 @@
 <template>
   <v-card outlined elevation="10">
     <v-card-title>
-      <div>
+      <router-link to="/profile" tag="a" class="profileLink">
         <v-avatar>
           <v-img :src="avatar" contain></v-img>
         </v-avatar>
-        <span class="pa-4">{{ author }}</span></div>
+        <span class="pa-4">{{ author }}</span></router-link>
 
 
       <v-spacer></v-spacer>
-      <v-btn text>        <span>{{ likes }}</span>
-        <v-icon class="ma-2">mdi-heart</v-icon></v-btn>
-
-
-
+      <v-btn plain @click="like">
+        <span>{{ likes }}</span>
+        <v-icon class="ma-2">{{ getLikeIcon()}}</v-icon>
+      </v-btn>
 
     </v-card-title>
     <v-card-text>
@@ -31,12 +30,28 @@ export default {
     img: String,
     likes: Number,
     author: String,
-    avatar: String
+    avatar: String,
+    id: Number,
+    liked: Boolean,
   },
   data: () => ({}),
+
+  methods: {
+    getLikeIcon(){
+      return this.liked ? "mdi-heart" : "mdi-heart-outline"
+    },
+
+    async like(){
+      this.liked = !this.liked
+    }
+  }
 }
 </script>
 
 <style scoped>
+.profileLink{
+  text-decoration: none;
+  color: inherit;
+}
 
 </style>

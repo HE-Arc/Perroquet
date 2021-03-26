@@ -7,7 +7,8 @@
             text="Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In finibus tempor scelerisque. Vestibulum dictum malesuada nisl quis luctus. Pellentesque pharetra posuere tincidunt. Curabitur vestibulum massa nec quam laoreet euismod. Maecenas ultricies et tortor at iaculis. Aliquam egestas tincidunt dolor pellentesque blandit. Aliquam erat volutpat. Quisque rhoncus iaculis ex, ut semper velit pretium non. Vestibulum vitae lectus at purus fermentum rhoncus sed eget turpis. Sed euismod rhoncus turpis, et maximus erat eleifend nec. Praesent laoreet aliquam mi, vitae rutrum ex eleifend id. Praesent magna nibh, sodales aliquam nisl eget, euismod mollis dolor."
             img="https://cdn.discordapp.com/attachments/782614625334067200/823500552389394472/XBz96_8AlAmRpt64P3_FY7uTnzgOIEtEYvSYNRjn6yVuQL5FpSnFmYp1NGC2k2DpvaJYPQcr-tPbQvEi0hxadhU6lCVmf4n8O6jp.png"
             author="Antonin Le Malin"
-            likes="9999"
+            likes=9999
+            liked=true
             v-bind:avatar="require('../assets/perroquet_logo/svg/Logo_DarkMagenta.svg')"
         />
 
