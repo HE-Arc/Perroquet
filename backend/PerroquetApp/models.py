@@ -12,11 +12,11 @@ from django.core.mail import send_mail
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
 
-    email_plaintext_message = "Pour réinitialiser votre mot de passe, rendez-vous sur: https://perroquet.srvz-webapp.he-arc.ch/reset-password/{}".format(reset_password_token.key)
+    email_plaintext_message = "To reset your password, go to: https://perroquet.srvz-webapp.he-arc.ch/reset-password/{}".format(reset_password_token.key)
 
     send_mail(
         # title:
-        "Réinitialisation de votre mot de passe Perroquet",
+        "Perroquet password reset",
         # message:
         email_plaintext_message,
         # from:

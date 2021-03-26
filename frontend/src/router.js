@@ -23,6 +23,11 @@ export default new Router({
       path: "/login",
       name: "Login",
       component: () => import("./components/Login.vue")
+    },
+    {
+      path: "/PasswordResetLink",
+      name: "PasswordResetLink",
+      component: () => import("./components/PasswodResetLink.vue")
     }
   ]
 });
