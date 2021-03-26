@@ -1,6 +1,7 @@
 # Create your views here.
 
 from rest_framework import viewsets, mixins, generics, permissions
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import action
@@ -60,10 +61,15 @@ class UserViewSet(mixins.RetrieveModelMixin,
     #         return UserSerializer
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 4
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    filter_backends = []
+    pagination_class = StandardResultsSetPagination
     # permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
@@ -77,7 +83,6 @@ class MessageViewSet(viewsets.ModelViewSet):
         discover_msg = Message.objects.order_by('date').reverse().all()
 
         page = self.paginate_queryset(discover_msg)
-        print(page)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
