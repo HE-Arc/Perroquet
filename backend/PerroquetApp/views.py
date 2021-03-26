@@ -3,6 +3,8 @@
 from rest_framework import viewsets, mixins, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter
 
 from .models import User, Message
 from .serializers import MessageSerializer, PublicUserProfileSerializer, UserSerializer, CreateMessageSerializer
@@ -61,12 +63,26 @@ class UserViewSet(mixins.RetrieveModelMixin,
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+    filter_backends = []
     # permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = CreateMessageSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        return Response(serializer.data)
+
+    @action(detail=False,methods=['get'],url_name="discover")
+    def discover(self, request):
+        discover_msg = Message.objects.order_by('date').reverse().all()
+
+        page = self.paginate_queryset(discover_msg)
+        print(page)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(discover_msg, many=True)
         return Response(serializer.data)
 
     # def retrieve(self, request, *args, **kwargs):

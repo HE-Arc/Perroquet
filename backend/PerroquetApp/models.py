@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -12,6 +14,13 @@ class Message(models.Model):
     content = models.TextField()
     replyTo = models.ForeignKey("PerroquetApp.Message", blank=True,null=True,on_delete=models.SET_NULL, related_name="replyToMessage")
     image = models.ImageField(upload_to ='img/%Y/%m/%d/',blank=True,null=True)
+    date = models.DateTimeField()
+
+    def save(self,*args, **kwargs):
+        if not self.id:
+            self.date=datetime.now()
+        super(Message,self).save(*args,**kwargs)
+
     def __str__(self):
         return '%s' % self.content
 
@@ -19,6 +28,7 @@ class Like(models.Model):
     """Table schema to store articles."""
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.ForeignKey("PerroquetApp.Message", on_delete=models.CASCADE, related_name="like")
+    date = models.DateTimeField()
 
     def __str__(self):
         return "like"
@@ -44,7 +54,7 @@ class Follow(models.Model):
     """Table schema to store follow."""
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followings")
     following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers")
-    date_follow = models.DateTimeField()
+    date = models.DateTimeField()
 
     def __str__(self):
         return '%s' % self.name

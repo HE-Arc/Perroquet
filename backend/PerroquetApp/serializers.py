@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from django.contrib.auth.password_validation import validate_password
-from rest_framework import serializers
+from rest_framework import serializers, fields
 from rest_framework.validators import UniqueValidator
 
 from .models import Message
@@ -52,7 +54,7 @@ class UserSerializer(serializers.ModelSerializer):
 class CreateMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['id','content','author','replyTo',]
+        fields = ['id','content','author','replyTo']
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
     author = PublicUserProfileSerializer(read_only=True)
@@ -61,5 +63,5 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['id','content','image','author_id','author','replyTo','url',]
+        fields = ['id','date','content','image','author_id','author','replyTo','url',]
         # depth=1
