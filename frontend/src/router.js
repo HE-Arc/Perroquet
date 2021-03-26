@@ -4,6 +4,7 @@ import Router from "vue-router";
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: "/",
@@ -27,7 +28,12 @@ export default new Router({
     {
       path: "/PasswordResetLink",
       name: "PasswordResetLink",
-      component: () => import("./components/PasswodResetLink.vue")
-    }
+      component: () => import("./components/PasswordResetLink.vue")
+    },
+    {
+      path: "/reset-password/:token",
+      name: "ResetPassword",
+      component: () => import("./components/PasswordReset.vue")
+    },
   ]
 });

@@ -91,6 +91,16 @@ const actions = {
                 })
         });
     },
+    passwordReset({commit}, fields) {
+        return new Promise((resolve, reject) => {
+                axios.post(BASE_URL + "password_reset/confirm/", fields).then(() => {
+                    commit('LOGOUT');
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
 }
 
 //to handle mutations
