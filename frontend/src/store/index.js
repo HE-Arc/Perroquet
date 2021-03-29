@@ -11,6 +11,7 @@ const BASE_URL = process.env.VUE_APP_BASEURL
 const state = {
     token: "",
     profiles: [],
+    filter: "new",
 }
 
 //to handle state
@@ -101,6 +102,9 @@ const actions = {
                 })
         });
     },
+    filter({ commit }, filter) {
+        commit('FILTER', filter);
+    },
 }
 
 //to handle mutations
@@ -121,6 +125,9 @@ const mutations = {
     ADDPROFILE(state, profile) {
         state.profiles[profile.id] = profile;
     },
+    FILTER(state, filter) {
+        state.filter = filter;
+    }
 }
 
 //export store module
