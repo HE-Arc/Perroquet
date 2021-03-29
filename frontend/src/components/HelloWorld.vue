@@ -2,7 +2,7 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
-
+        <filters></filters>
         <message></message>
         <login></login>
 
@@ -98,9 +98,10 @@
 <script>
   import Message from "@/components/Message";
   import Login from "@/components/Login";
+  import Filters from "@/components/Filters"
   export default {
     name: 'HelloWorld',
-    components: {Login, Message},
+    components: {Login, Message, Filters},
     data: () => ({
       ecosystem: [
         {
