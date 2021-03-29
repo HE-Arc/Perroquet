@@ -4,6 +4,26 @@ from django.db import models
 # Create your models here.
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
+from django_rest_passwordreset.signals import reset_password_token_created
+from django.core.mail import send_mail  
+
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+
+    email_plaintext_message = "To reset your password, go to: https://perroquet.srvz-webapp.he-arc.ch/reset-password/{}".format(reset_password_token.key)
+
+    send_mail(
+        # title:
+        "Perroquet password reset",
+        # message:
+        email_plaintext_message,
+        # from:
+        "jonatan.baumgartner@he-arc.ch",
+        # to:
+        [reset_password_token.user.email]
+    )
 
 
 class Message(models.Model):
