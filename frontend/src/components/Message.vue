@@ -1,7 +1,7 @@
 <template>
   <v-card outlined elevation="10">
     <v-card-title>
-      <router-link to="/profile" tag="a" class="profileLink">
+      <router-link to="/profile" class="profileLink">
         <v-avatar>
           <v-img :src="avatar" contain></v-img>
         </v-avatar>
@@ -9,7 +9,7 @@
 
 
       <v-spacer></v-spacer>
-      <v-btn plain @click="like">
+      <v-btn plain v-on:click="$emit('updateLike')">
         <span>{{ likes }}</span>
         <v-icon class="ma-2">{{ getLikeIcon()}}</v-icon>
       </v-btn>
@@ -34,16 +34,20 @@ export default {
     id: Number,
     liked: Boolean,
   },
-  data: () => ({}),
+  data: () => ({
+  }),
 
   methods: {
+
     getLikeIcon(){
       return this.liked ? "mdi-heart" : "mdi-heart-outline"
     },
 
-    async like(){
-      this.liked = !this.liked
-    }
+    // async like(){
+    //
+    //  this.$data._liked = !this.$data._liked
+    //  this.$data._likes += this.$data._likes ? 1 : -1
+    // }
   }
 }
 </script>
