@@ -26,7 +26,7 @@ export default new Router({
       component: () => import("./components/Login.vue")
     },
     {
-      path: "/PasswordResetLink",
+      path: "/passwordResetLink",
       name: "PasswordResetLink",
       component: () => import("./components/PasswordResetLink.vue")
     },
