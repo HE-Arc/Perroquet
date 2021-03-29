@@ -27,7 +27,7 @@
                 @click="submit"
                 color="primary"
                 :disabled="!valid"
-                >Reset</v-btn
+                >Send me a reset link</v-btn
               >
             </v-card-actions>
           </v-card-text>

@@ -21,7 +21,7 @@
           </v-card-text>
           <v-card-actions>
               <v-spacer></v-spacer>
-            <v-btn class="mr-4" @click="submit" :disabled="!valid"> Reset </v-btn>
+            <v-btn class="mr-4" @click="submit" :disabled="!valid"> Save new password </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
