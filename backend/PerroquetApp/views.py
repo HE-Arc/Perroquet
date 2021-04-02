@@ -39,6 +39,45 @@ class UserViewSet(mixins.RetrieveModelMixin,
     queryset = User.objects.all()
     serializer_class = PublicUserProfileSerializer
 
+    @action(detail=True, methods=['get'], url_name="messages")
+    def messages(self, request,pk):
+
+        user_msg = Message.objects.order_by('date').filter(user__id=pk).reverse().all()
+
+        page = self.paginate_queryset(user_msg)
+        if page is not None:
+            serializer = MessageSerializer(page, many=True,context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = MessageSerializer(user_msg, many=True,context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_name="followers")
+    def followers(self, request, pk):
+
+        followers = Follow.objects.filter(following__id=pk).all()
+
+        page = self.paginate_queryset(followers)
+        if page is not None:
+            serializer = FollowSerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = FollowSerializer(followers, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_name="follows")
+    def follows(self, request, pk):
+
+        follows = Follow.objects.filter(user__id=pk).all()
+
+        page = self.paginate_queryset(follows)
+        if page is not None:
+            serializer = FollowSerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = FollowSerializer(follows, many=True, context={'request': request})
+        return Response(serializer.data)
+
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 4
@@ -74,13 +113,6 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(discover_msg, many=True)
         return Response(serializer.data)
-
-    def get_queryset(self):
-        print(self.request.method)
-        if self.request.method == 'POST':
-            return self.queryset.filter(author=self.request.user)
-        else:
-            return self.queryset
 
 class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
