@@ -43,11 +43,6 @@ export default {
       return this.liked ? "mdi-heart" : "mdi-heart-outline"
     },
 
-    // async like(){
-    //
-    //  this.$data._liked = !this.$data._liked
-    //  this.$data._likes += this.$data._likes ? 1 : -1
-    // }
   }
 }
 </script>
