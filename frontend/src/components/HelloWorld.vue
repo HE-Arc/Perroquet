@@ -2,6 +2,10 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
+        <filters></filters>
+        <message></message>
+        <login></login>
+
         <v-img
           :src="require('../assets/logo.svg')"
           class="my-3"
@@ -92,9 +96,12 @@
 </template>
 
 <script>
+  import Message from "@/components/Message";
+  import Login from "@/components/Login";
+  import Filters from "@/components/Filters"
   export default {
     name: 'HelloWorld',
-
+    components: {Login, Message, Filters},
     data: () => ({
       ecosystem: [
         {
