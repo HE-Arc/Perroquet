@@ -50,14 +50,6 @@ export default {
   name: "Navigationbar",
 
   data: () => ({
-    links: [
-      ['mdi-home', 'Home'],
-      ['mdi-compass', 'Discover'],
-      ['mdi-account-heart', 'Friends'],
-      ['mdi-cog', 'Settings'],
-      ['mdi-folder-plus', 'Signin']
-    ],
-
   }),
 
   computed: {
@@ -76,7 +68,7 @@ export default {
       return navItems
     },
     userIsAuthenticated () {
-      return true
+      return this.$store.getters.authenticated
     },
 
     userLogin(){
