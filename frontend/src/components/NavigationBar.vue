@@ -76,7 +76,7 @@ export default {
       return navItems
     },
     userIsAuthenticated () {
-      return false
+      return true
     },
 
     userLogin(){
