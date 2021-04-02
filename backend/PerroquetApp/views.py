@@ -7,9 +7,9 @@ from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 
-from .models import User, Message, Follow
+from .models import User, Message, Follow, Like
 from .serializers import MessageSerializer, PublicUserProfileSerializer, UserSerializer, CreateMessageSerializer, \
-    FollowSerializer
+    FollowSerializer, LikeSerializer
 
 
 class IsOwner(permissions.BasePermission):
@@ -50,13 +50,18 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [IsOwner]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwner]
+    http_method_names = ['get', 'post', 'delete']
 
-    def create(self, request, *args, **kwargs):
-        serializer = CreateMessageSerializer(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+#Pas besoin en fait
+    # def create(self, request, *args, **kwargs):
+    #     serializer = CreateMessageSerializer(data=request.data, context={'request': request})
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save(user = request.user)
+    #     return Response(serializer.data)
 
     @action(detail=False,methods=['get'],url_name="discover")
     def discover(self, request):
@@ -81,4 +86,18 @@ class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [IsOwner]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwner]
+    http_method_names = ['get','post','delete']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwner]
+    http_method_names = ['get','post','delete']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

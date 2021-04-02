@@ -22,13 +22,15 @@ class Message(models.Model):
 
 class Like(models.Model):
     """Table schema to store articles."""
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, )
     message = models.ForeignKey("PerroquetApp.Message", on_delete=models.CASCADE, related_name="like")
     date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = (("user","message"),)
 
     def __str__(self):
-        return "like"
+        return User.objects.get(pk=self.user_id).username +" like "+Message.objects.get(pk=self.message_id).id
 
 class Profile(models.Model):
     """Table schema to store profile."""
