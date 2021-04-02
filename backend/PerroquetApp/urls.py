@@ -15,6 +15,7 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet,'user')
 router.register(r'messages', views.MessageViewSet,'message')
+router.register(r'follows', views.FollowViewSet,'follow')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

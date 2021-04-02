@@ -7,8 +7,18 @@ from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 
-from .models import User, Message
-from .serializers import MessageSerializer, PublicUserProfileSerializer, UserSerializer, CreateMessageSerializer
+from .models import User, Message, Follow
+from .serializers import MessageSerializer, PublicUserProfileSerializer, UserSerializer, CreateMessageSerializer, \
+    FollowSerializer
+
+
+class IsOwner(permissions.BasePermission):
+    message = "Not an owner"
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user == obj.user
 
 
 class HelloView(APIView):
@@ -29,48 +39,18 @@ class UserViewSet(mixins.RetrieveModelMixin,
     queryset = User.objects.all()
     serializer_class = PublicUserProfileSerializer
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = UserSerializer(data=request.data,context={'request': request})
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #     return Response(serializer.data)
-    #
-    # def retrieve(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     serializer = PublicUserProfileSerializer(instance=instance,context={'request': request})
-    #     return Response(serializer.data)
-    #
-    # def list(self, request):
-    #     instances = User.objects.all()
-    #     serializer = PublicUserProfileSerializer(instances, many=True, context={'request': request})
-    #     return Response(serializer.data)
-    #
-    # def update(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     serializer = PublicUserProfileSerializer(instance=instance,data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #     return Response(serializer.data)
-    #
-    # def get_serializer_class(self):
-    #     if self.action == 'list' \
-    #             or self.action == 'retrieve'\
-    #             or self.action == 'update':
-    #         return PublicUserProfileSerializer
-    #     if self.action == 'create':
-    #         return UserSerializer
-
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 4
     page_size_query_param = 'page_size'
     max_page_size = 10
 
+
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     pagination_class = StandardResultsSetPagination
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsOwner]
 
     def create(self, request, *args, **kwargs):
         serializer = CreateMessageSerializer(data=request.data, context={'request': request})
@@ -90,29 +70,15 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(discover_msg, many=True)
         return Response(serializer.data)
 
-    # def retrieve(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     instance.content = "blabla"
-    #     serializer = self.get_serializer(instance)
-    #     return Response(serializer.data)
-    #
-    # def list(self, request):
-    #     instances = Message.objects.all()
-    #     serializer = MessageSerializer(instances,many=True, context={'request': request})
-    #     return Response(serializer.data)
+    def get_queryset(self):
+        print(self.request.method)
+        if self.request.method == 'POST':
+            return self.queryset.filter(author=self.request.user)
+        else:
+            return self.queryset
 
-
-# class MessageList(generics.ListCreateAPIView):
-#     queryset = Message.objects.all()
-#     serializer_class = MessageSerializer
-#     permission_classes = [permissions.IsAuthenticated]
-#
-# class UserList(generics.ListCreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = PublicUserProfileSerializer
-#     permission_classes = [permissions.IsAuthenticated]
-
-#
-# class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Subscription.objects.all()
-#     serializer_class = SubscriptionSerializer
+class FollowViewSet(viewsets.ModelViewSet):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [IsOwner]
