@@ -82,6 +82,22 @@ const actions = {
             }
         });
     },
+    saveProfile({ commit }, profile) {
+        return new Promise((resolve, reject) => {
+            axios.put(BASE_URL + "users/"+profile.id+"/", {
+                id: profile.id,
+                username: profile.username,
+                profile:{
+                    bio: profile.profile.bio
+                }
+            }).then(() => {
+                commit('ADDPROFILE', profile);
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
+        });
+    },
     passwordResetLink({commit}, fields) {
         return new Promise((resolve, reject) => {
                 axios.post(BASE_URL + "password_reset", {email: fields.email}).then(() => {

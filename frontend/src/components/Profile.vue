@@ -68,7 +68,12 @@ export default {
   },
   methods: {
     saveProfile: function() {
-      this.edit=false;
+      var vm = this;
+      this.$store.dispatch("saveProfile", vm.profile).then(
+        () => {
+          vm.edit=false;
+        }
+      );
     }
   },
   mounted() {
@@ -76,8 +81,8 @@ export default {
     this.$store.dispatch("getProfile", this.$route.params.pId).then(
       (p) => {
         vm.profile = p;
-        }
-        );
+      }
+    );
   }
 };
 </script>
