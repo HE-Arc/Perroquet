@@ -35,5 +35,10 @@ export default new Router({
       name: "ResetPassword",
       component: () => import("./components/PasswordReset.vue")
     },
+    {
+      path: "/profile/:pId",
+      name: "profile",
+      component: () => import("./components/Profile.vue")
+    }
   ]
 });

@@ -73,7 +73,7 @@ const actions = {
             if (state.profiles[id] !== undefined) {
                 resolve(state.profiles[id]);
             } else {
-                axios.get(BASE_URL + "user/"+id+"/").then((response) => {
+                axios.get(BASE_URL + "users/"+id+"/").then((response) => {
                     commit('ADDPROFILE', response.data);
                     resolve(state.profiles[id]);
                 }, (error) => {
