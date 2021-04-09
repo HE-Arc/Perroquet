@@ -7,6 +7,14 @@
             <v-avatar>
               <v-img :src="profile.profile.image" contain></v-img>
             </v-avatar>
+            <v-file-input 
+              v-if="edit"
+              accept="image/png, image/jpeg, image/bmp"
+              placeholder="New Profile Picture"
+              prepend-icon="mdi-camera"
+              label="New Profile Picture"
+              @change="selectFile"
+            ></v-file-input>
             <span v-if="!edit" class="pa-4">{{profile.username}}</span>
             <v-text-field v-if="edit" label="Username" v-model="profile.username" outlined></v-text-field>
             <v-spacer></v-spacer>
@@ -45,6 +53,7 @@ export default {
 
   data: () => ({
     edit: false,
+    file: '',
 
     profile: {
       id: 0,
@@ -69,11 +78,29 @@ export default {
   methods: {
     saveProfile: function() {
       var vm = this;
-      this.$store.dispatch("saveProfile", vm.profile).then(
+
+      var formdata = new FormData();
+      formdata.append('id', vm.profile.id)
+      formdata.append('username', vm.profile.username)
+      formdata.append('profile.bio', vm.profile.profile.bio)
+
+      if(vm.file!=""){
+        formdata.append('profile.image', vm.file)
+      }
+
+      this.$store.dispatch("saveProfile", {data:formdata, id: vm.profile.id}).then(
         () => {
           vm.edit=false;
+          this.$store.dispatch("getProfile", this.$route.params.pId).then(
+            (p) => {
+              vm.profile = p;
+            }
+          );
         }
       );
+    },
+    selectFile(f) {
+      this.file=f
     }
   },
   mounted() {

@@ -84,14 +84,13 @@ const actions = {
     },
     saveProfile({ commit }, profile) {
         return new Promise((resolve, reject) => {
-            axios.put(BASE_URL + "users/"+profile.id+"/", {
-                id: profile.id,
-                username: profile.username,
-                profile:{
-                    bio: profile.profile.bio
+            axios.put(BASE_URL + "users/"+profile.id+"/", profile.data, {
+                headers: {
+                  "Content-Type": "multipart/form-data"
                 }
-            }).then(() => {
-                commit('ADDPROFILE', profile);
+            }
+            ).then((response) => {
+                commit('ADDPROFILE', response.data);
                 resolve();
             }, (error) => {
                 reject(error);
