@@ -22,14 +22,13 @@ export default {
   name: "Profile",
 
   data: () => ({
-    
   }),
   computed: {
       profile() {
           var p = null;
           this.$store.dispatch("getProfile", this.$route.params.token).then(
               (p) => {
-                  
+                  return p;
               }
           );
       }
