@@ -4,21 +4,41 @@ from django.db import models
 # Create your models here.
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
+from django_rest_passwordreset.signals import reset_password_token_created
+from django.core.mail import send_mail  
+
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+
+    email_plaintext_message = "To reset your password, go to: https://perroquet.srvz-webapp.he-arc.ch/reset-password/{}".format(reset_password_token.key)
+
+    send_mail(
+        # title:
+        "Perroquet password reset",
+        # message:
+        email_plaintext_message,
+        # from:
+        "jonatan.baumgartner@he-arc.ch",
+        # to:
+        [reset_password_token.user.email]
+    )
 
 
 class Message(models.Model):
     """Table schema to store articles."""
-    author = models.ForeignKey(User, on_delete=models.CASCADE,related_name="author")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="message")
     content = models.TextField()
-    replyTo = models.ForeignKey("PerroquetApp.Message", null=True,on_delete=models.SET_NULL, related_name="replyToMessage")
-
+    replyTo = models.ForeignKey("PerroquetApp.Message", blank=True,null=True,on_delete=models.SET_NULL, related_name="replyToMessage")
+    image = models.ImageField(upload_to ='img/%Y/%m/%d/',blank=True,null=True)
     def __str__(self):
         return '%s' % self.content
 
 class Like(models.Model):
     """Table schema to store articles."""
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.ForeignKey("PerroquetApp.Message", on_delete=models.CASCADE, related_name="message")
+    message = models.ForeignKey("PerroquetApp.Message", on_delete=models.CASCADE, related_name="like")
 
     def __str__(self):
         return "like"
@@ -26,8 +46,8 @@ class Like(models.Model):
 class Profile(models.Model):
     """Table schema to store profile."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField()
-    image = models.CharField(max_length=255)
+    bio = models.TextField(blank=True)
+    image = models.ImageField(upload_to ='img/%Y/%m/%d/',blank=True,null=True)
     location = models.CharField(max_length=30, blank=True)
     birthDate = models.DateField(null=True, blank=True)
 
@@ -42,8 +62,8 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Follow(models.Model):
     """Table schema to store follow."""
-    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
-    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followings")
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers")
     date_follow = models.DateTimeField()
 
     def __str__(self):
