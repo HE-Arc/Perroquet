@@ -8,12 +8,12 @@ export default new Router({
   routes: [
     {
       path: "/",
-      redirect: '/index'
+      redirect: '/discover'
     },
     {
-      path: "/index",
-      name: "HelloWorld",
-      component: () => import("./components/HelloWorld.vue")
+      path: "/discover",
+      name: "Discover",
+      component: () => import("./components/Discover.vue")
     },
     {
       path: "/signin",

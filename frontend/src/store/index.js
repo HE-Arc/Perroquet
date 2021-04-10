@@ -105,6 +105,13 @@ const actions = {
     filter({ commit }, filter) {
         commit('FILTER', filter);
     },
+    async requestDiscover({commit}, page){
+        try {
+            const response = await axios.get
+        }catch (error){
+
+        }
+    }
 }
 
 //to handle mutations
