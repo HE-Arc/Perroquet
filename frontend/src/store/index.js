@@ -12,6 +12,7 @@ const state = {
     token: "",
     profiles: [],
     filter: "new",
+    userIs: 1,
 }
 
 //to handle state
@@ -31,6 +32,7 @@ const actions = {
                     password: fields.password,
                 }).then((response) => {
                     commit('LOGIN', response.data.token);
+                    
                     resolve();
                 }, (error) => {
                     reject(error);
@@ -97,6 +99,16 @@ const actions = {
             })
         });
     },
+    getProfileMessages({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            axios.get(BASE_URL + "users/"+id+"/messages/").then((response) => {
+                commit('ADDMESSAGESTOPROFILE', {m : response.data, id: id});
+                resolve(state.profiles[id].messages);
+            }, (error) => {
+                reject(error);
+            })
+        });
+    },
     passwordResetLink({commit}, fields) {
         return new Promise((resolve, reject) => {
                 axios.post(BASE_URL + "password_reset", {email: fields.email}).then(() => {
@@ -139,6 +151,9 @@ const mutations = {
     },
     ADDPROFILE(state, profile) {
         state.profiles[profile.id] = profile;
+    },
+    ADDMESSAGESTOPROFILE(state, {m, id}) {
+        state.profiles[id].messages = m;
     },
     FILTER(state, filter) {
         state.filter = filter;

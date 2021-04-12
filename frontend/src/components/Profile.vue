@@ -54,6 +54,7 @@ export default {
   data: () => ({
     edit: false,
     file: '',
+    messages: null,
 
     profile: {
       id: 0,
@@ -110,6 +111,11 @@ export default {
         vm.profile = p;
       }
     );
+    this.$store.dispatch("getProfileMessages", this.$route.params.pId).then(
+      (m) => {
+        vm.messages = m;
+      }
+    )
   }
 };
 </script>
