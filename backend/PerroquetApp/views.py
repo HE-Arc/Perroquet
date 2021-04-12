@@ -39,6 +39,11 @@ class UserViewSet(mixins.RetrieveModelMixin,
     queryset = User.objects.all()
     serializer_class = PublicUserProfileSerializer
 
+    @action(detail=False, methods=['get'], url_name="me")
+    def me(self, request):
+        serializer = PublicUserProfileSerializer(request.user,context={'request': request}, many=False)
+        return Response(serializer.data)
+
     @action(detail=True, methods=['get'], url_name="messages")
     def messages(self, request,pk):
 
@@ -101,6 +106,18 @@ class MessageViewSet(viewsets.ModelViewSet):
     #     serializer.is_valid(raise_exception=True)
     #     serializer.save(user = request.user)
     #     return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_name="home")
+    def discover(self, request):
+        discover_msg = Message.objects.order_by('date').reverse().all()
+
+        page = self.paginate_queryset(discover_msg)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(discover_msg, many=True)
+        return Response(serializer.data)
 
     @action(detail=False,methods=['get'],url_name="discover")
     def discover(self, request):
