@@ -71,6 +71,9 @@ const actions = {
                     password: fields.password,
                 }).then((response) => {
                     commit('LOGIN', response.data.token);
+                    axios.defaults.headers.common = {
+                        "Authorization": 'Token ' + response.data.token
+                    };
                     axios.get(BASE_URL + "users/me/").then((response) => {
                         commit('SETID', response.data.id);
                         resolve();
