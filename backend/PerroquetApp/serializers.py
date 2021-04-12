@@ -67,13 +67,23 @@ class UserSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
     user = PublicUserProfileSerializer(read_only=True)
     like_count = serializers.SerializerMethodField(read_only=True)
+    liked = serializers.SerializerMethodField(read_only=True)
 
-    def get_like_count(self,user):
-        return user.like.count()
+    def get_liked(self,msg):
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+            likes = Like.objects.filter(message_id=msg.id).filter(user__id=user.id)
+            if likes.count():
+                return True
+        return False
+
+    def get_like_count(self,msg):
+        return msg.like.count()
 
     class Meta:
         model = Message
-        fields = ['id','date','like_count','content','image','user','replyTo','url',]
+        fields = ['id','date','like_count','liked','content','image','user','replyTo','url',]
 
 
 class FollowSerializer(serializers.ModelSerializer):
