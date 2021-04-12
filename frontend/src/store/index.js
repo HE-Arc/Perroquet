@@ -12,13 +12,17 @@ const state = {
     token: "",
     profiles: [],
     filter: "new",
+    messages: []
 }
 
 //to handle state
 const getters = {
     authenticated: state => {
-        return state.token != ""
-    }
+        return state.token !== ""
+    },
+    // messages: state => {
+    //     return state.messages
+    // }
 }
 
 //to handle actions
@@ -105,13 +109,30 @@ const actions = {
     filter({ commit }, filter) {
         commit('FILTER', filter);
     },
-    async requestDiscover({commit}, page){
-        try {
-            const response = await axios.get
+    // requestDiscover({ commit }){
+    //     return new Promise((resolve, reject) => {
+    //         console.log(BASE_URL + "messages/discover/")
+    //         axios.get(BASE_URL + "messages/discover/").then((response) => {
+    //                 commit('MESSAGES', response.data.results)
+    //                 resolve()
+    //             },
+    //             (error) => {
+    //                 reject(error);
+    //             })
+    //     })
+    // }
+        async requestDiscover({ commit }){
+        try{
+            const response = await axios.get(BASE_URL + "messages/discover/")
+                    commit('MESSAGES', response.data.results)
         }catch (error){
+            console.log(error)
+        }
+
+
 
         }
-    }
+
 }
 
 //to handle mutations
@@ -134,6 +155,9 @@ const mutations = {
     },
     FILTER(state, filter) {
         state.filter = filter;
+    },
+    MESSAGES(state, messages){
+        state.messages = messages;
     }
 }
 
