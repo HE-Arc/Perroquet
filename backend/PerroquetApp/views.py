@@ -39,7 +39,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
     queryset = User.objects.all()
     serializer_class = PublicUserProfileSerializer
 
-    @action(detail=False, methods=['get'], url_name="me")
+    @action(detail=False, methods=['get'], url_name="me",permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
         serializer = PublicUserProfileSerializer(request.user,context={'request': request}, many=False)
         return Response(serializer.data)
