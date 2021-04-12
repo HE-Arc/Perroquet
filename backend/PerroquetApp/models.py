@@ -30,7 +30,7 @@ class Like(models.Model):
         unique_together = (("user","message"),)
 
     def __str__(self):
-        return User.objects.get(pk=self.user_id).username +" like "+Message.objects.get(pk=self.message_id).id
+        return User.objects.get(pk=self.user_id).username +" like "+ str(Message.objects.get(pk=self.message_id).id)
 
 class Profile(models.Model):
     """Table schema to store profile."""
