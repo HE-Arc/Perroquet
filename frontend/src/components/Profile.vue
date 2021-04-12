@@ -44,7 +44,7 @@
             :text="message.content"
             :author="message.user.username"
             v-bind:likes=9999
-            v-bind:liked=true
+            v-bind:liked="message.liked"
             v-bind:avatar="message.user.profile.image"
         />
       </v-col>
