@@ -155,10 +155,16 @@ const mutations = {
     LOGOUT(state) {
         state.token = "";
         localStorage.setItem("token", "");
+        axios.defaults.headers.common = {
+            "Authorization": ""
+        };
     },
     initialiseStore(state) {
         if (localStorage.getItem('token') != null) {
             state.token = localStorage.getItem('token');
+            axios.defaults.headers.common = {
+                "Authorization": 'Token ' + state.token
+            };
         }
     },
     ADDPROFILE(state, profile) {
