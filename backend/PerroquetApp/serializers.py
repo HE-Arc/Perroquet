@@ -17,10 +17,19 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
     profile = ProfileSerializer(read_only=False)
+    # follow = serializers.StringRelatedField(many=True)
+    follow_count = serializers.SerializerMethodField(read_only=True)
+    followers_count = serializers.SerializerMethodField(read_only=True)
+
+    def get_follow_count(self,user):
+        return user.follow.count()
+
+    def get_followers_count(self,user):
+        return user.followers.count()
 
     class Meta:
         model = User
-        fields = ('id','username','first_name', 'last_name', 'profile','url'
+        fields = ('id','username','first_name', 'last_name', 'profile','follow_count','followers_count','url'
         )
 
     def update(self, instance, validated_data):
