@@ -22,7 +22,7 @@
             <v-btn v-if="ownProfile && edit" @click="saveProfile()">Save</v-btn>
           </v-card-title>
           <v-card-text>
-            <v-spacer></v-spacer>TODO follower<br>
+            <v-spacer></v-spacer>{{profile.followers_count}} Followers <v-space></v-space> {{profile.follow_count}} Follow<br><br>
             <p v-if="!edit" class="text-justify">{{ profile.profile.bio }}</p>
             <v-textarea label="bio" v-model="profile.profile.bio" v-if="edit" outlined></v-textarea>
           </v-card-text>
@@ -39,7 +39,14 @@
     </v-row>
     <v-row>
       <v-col>
-        TODO add messages
+        <message
+            v-for="message in messages" :key="message.id"
+            :text="message.content"
+            :author="message.user.username"
+            v-bind:likes=9999
+            v-bind:liked=true
+            v-bind:avatar="message.user.profile.image"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -47,14 +54,15 @@
 
 <script>
 import Filters from "@/components/Filters";
+import Message from "@/components/Message";
 export default {
-  components: { Filters },
+  components: { Filters, Message },
   name: "Profile",
 
   data: () => ({
     edit: false,
     file: '',
-    messages: null,
+    messages: [],
 
     profile: {
       id: 0,
@@ -71,9 +79,7 @@ export default {
   }),
   computed: {
     ownProfile: function() {
-      //TODO replace
-      // return this.$store.state.userId==this.profile.id
-      return true;
+      return this.$store.state.userId==this.profile.id
     }
   },
   methods: {

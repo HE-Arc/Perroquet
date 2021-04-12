@@ -12,7 +12,7 @@ const state = {
     token: "",
     profiles: [],
     filter: "new",
-    userIs: 1,
+    userId: 0,
 }
 
 //to handle state
@@ -31,9 +31,16 @@ const actions = {
                     username: fields.username,
                     password: fields.password,
                 }).then((response) => {
+                    axios.defaults.headers.common = {
+                        "Authorization": 'Token ' + response.data.token
+                    };
                     commit('LOGIN', response.data.token);
-                    
-                    resolve();
+                    axios.get(BASE_URL + "users/me/").then((response) => {
+                        commit('SETID', response.data.id);
+                        resolve();
+                    }, (error) => {
+                        reject(error);
+                    })
                 }, (error) => {
                     reject(error);
                 });
@@ -64,7 +71,12 @@ const actions = {
                     password: fields.password,
                 }).then((response) => {
                     commit('LOGIN', response.data.token);
-                    resolve();
+                    axios.get(BASE_URL + "users/me/").then((response) => {
+                        commit('SETID', response.data.id);
+                        resolve();
+                    }, (error) => {
+                        reject(error);
+                    })
                 }, (error) => {
                     reject(error);
                 });
@@ -153,10 +165,13 @@ const mutations = {
         state.profiles[profile.id] = profile;
     },
     ADDMESSAGESTOPROFILE(state, {m, id}) {
-        state.profiles[id].messages = m;
+        state.profiles[id].messages = m.results;
     },
     FILTER(state, filter) {
         state.filter = filter;
+    },
+    SETID(state, id) {
+        state.userId = id;
     }
 }
 
