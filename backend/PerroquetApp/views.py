@@ -108,7 +108,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     #     return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_name="home")
-    def discover(self, request):
+    def home(self, request):
         discover_msg = Message.objects.order_by('date').reverse().all()
 
         page = self.paginate_queryset(discover_msg)
