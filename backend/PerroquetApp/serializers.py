@@ -17,7 +17,6 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
     profile = ProfileSerializer(read_only=False)
-    # follow = serializers.StringRelatedField(many=True)
     follow_count = serializers.SerializerMethodField(read_only=True)
     followers_count = serializers.SerializerMethodField(read_only=True)
 
@@ -57,31 +56,25 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 #Inutile avec le perform_create dans la view
-class CreateMessageSerializer(serializers.ModelSerializer):
-    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = Message
-        fields = ['id','content','user','replyTo']
+# class CreateMessageSerializer(serializers.ModelSerializer):
+#     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+#     user = serializers.PrimaryKeyRelatedField(read_only=True)
+#
+#     class Meta:
+#         model = Message
+#         fields = ['id','content','user','replyTo']
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
     user = PublicUserProfileSerializer(read_only=True)
-    # user_id = serializers.PrimaryKeyRelatedField(
-    #     queryset=User.objects.all(), source='user', write_only=True)
+    like_count = serializers.SerializerMethodField(read_only=True)
+
+    def get_like_count(self,user):
+        return user.like.count()
 
     class Meta:
         model = Message
-        fields = ['id','date','content','image','user','replyTo','url',]
-        # fields = ['id','date','content','image','user_id','user','replyTo','url',]
+        fields = ['id','date','like_count','content','image','user','replyTo','url',]
 
-
-class CreateFollowSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = Follow
-        fields = ['id','user','following','date','url']
 
 class FollowSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(read_only=True)
@@ -94,8 +87,11 @@ class FollowSerializer(serializers.ModelSerializer):
         fields = ['id','user_id','user','following_id','following','date','url']
 
 class LikeSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    user_id = serializers.IntegerField(read_only=True)
+    user = PublicUserProfileSerializer(read_only=True)
+    message_id = serializers.IntegerField()
+    message = MessageSerializer(read_only=True)
 
     class Meta:
         model = Like
-        fields = ['id','user','message','date','url']
+        fields = ['id','user_id','user','message_id','message','date','url']

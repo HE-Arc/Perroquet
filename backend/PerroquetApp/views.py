@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 
 from .models import User, Message, Follow, Like
-from .serializers import MessageSerializer, PublicUserProfileSerializer, UserSerializer, CreateMessageSerializer, \
+from .serializers import MessageSerializer, PublicUserProfileSerializer, \
     FollowSerializer, LikeSerializer
 
 
@@ -134,6 +134,16 @@ class MessageViewSet(viewsets.ModelViewSet):
 class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwner]
+    http_method_names = ['get','post','delete']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwner]
     http_method_names = ['get','post','delete']
