@@ -4,7 +4,7 @@
     :key="message.id"
     v-bind:text="message.content"
     v-bind:author="message.username"
-    v-bind:>
+    v-bind:avatar="message.user.profile.image">
 
     </message>
 </div>
