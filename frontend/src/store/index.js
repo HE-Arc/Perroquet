@@ -184,6 +184,16 @@ const actions = {
         });
                 */
     },
+    // eslint-disable-next-line no-unused-vars
+    getFollow({commit}, userId) {
+        return new Promise((resolve, reject) => {
+                axios.get(BASE_URL + "users/" + userId + "/follows/").then((response) => {
+                    resolve(response.data.results);
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
 }
 
 //to handle mutations

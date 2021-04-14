@@ -46,6 +46,15 @@ export default new Router({
       redirect: function() { return "/profile/" + store.state.userId},
     },
     {
+      path: "/follow/:pId",
+      name: "follow",
+      component: () => import("./components/Follow.vue")
+    },
+    {
+      path: "/follow",
+      redirect: function() { return "/follow/" + store.state.userId},
+    },
+    {
       path: "/logout",
       redirect: function() { 
         store.dispatch("logout");
