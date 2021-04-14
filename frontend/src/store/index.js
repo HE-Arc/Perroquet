@@ -48,7 +48,6 @@ const actions = {
     },
     logout({ commit }) {
         commit('LOGOUT');
-        this.$router.push("index")
     },
     register({ commit }, fields) {
         return new Promise((resolve, reject) => {
@@ -141,7 +140,7 @@ const actions = {
     },
     passwordResetLink({commit}, fields) {
         return new Promise((resolve, reject) => {
-                axios.post(BASE_URL + "password_reset", {email: fields.email}).then(() => {
+                axios.post(BASE_URL + "password_reset/", {email: fields.email}).then(() => {
                     commit('LOGOUT');
                     resolve();
                 }, (error) => {
@@ -162,6 +161,29 @@ const actions = {
     filter({ commit }, filter) {
         commit('FILTER', filter);
     },
+    // eslint-disable-next-line no-unused-vars
+    addLike({commit}, messageId) {
+        return new Promise((resolve, reject) => {
+                axios.post(BASE_URL + "likes/", {message_id: messageId}).then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    removeLike({commit}, messageId) {
+        //FIXME add route to delete like from message ID
+        /*
+        return new Promise((resolve, reject) => {
+                axios.delete(BASE_URL + "likes/" + messageId + "/").then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+                */
+    },
 }
 
 //to handle mutations
@@ -176,13 +198,18 @@ const mutations = {
         axios.defaults.headers.common = {
             "Authorization": ""
         };
+        localStorage.setItem("userID", 0);
+        state.userId=0;
     },
     initialiseStore(state) {
         if (localStorage.getItem('token') != null) {
             state.token = localStorage.getItem('token');
-            axios.defaults.headers.common = {
-                "Authorization": 'Token ' + state.token
-            };
+            if(state.token!=""){
+                axios.defaults.headers.common = {
+                    "Authorization": 'Token ' + state.token
+                };
+            }
+            state.userId = localStorage.getItem("userId")
         }
     },
     ADDPROFILE(state, profile) {
@@ -196,6 +223,7 @@ const mutations = {
     },
     SETID(state, id) {
         state.userId = id;
+        localStorage.setItem("userId", id);
     }
 }
 

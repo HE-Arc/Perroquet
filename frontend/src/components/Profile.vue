@@ -46,12 +46,7 @@
       <v-col>
         <message
             v-for="message in messages" :key="message.id"
-            :text="message.content"
-            :author="message.user.username"
-            v-bind:likes="message.like_count"
-            v-bind:liked="message.liked"
-            v-bind:avatar="message.user.profile.image"
-            :img="message.image"
+            :message="message"
         />
       </v-col>
     </v-row>
@@ -123,7 +118,7 @@ export default {
     },
     selectFile(f) {
       this.file=f
-    }
+    },
   },
   mounted() {
     var vm = this;
