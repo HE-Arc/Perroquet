@@ -22,7 +22,13 @@
             <v-btn v-if="ownProfile && edit" @click="saveProfile()">Save</v-btn>
           </v-card-title>
           <v-card-text>
-            <v-spacer></v-spacer>{{profile.followers_count}} Followers  {{profile.follow_count}} Follow<br><br>
+            <v-spacer></v-spacer>
+            <router-link :to="'/follower/' + profile.id" class="profileLink">
+            {{profile.followers_count}} Followers 
+            </router-link>
+            <router-link :to="'/follow/' + profile.id" class="profileLink">
+            {{profile.follow_count}} Follow
+            </router-link><br><br>
             <p v-if="!edit" class="text-justify">{{ profile.profile.bio }}</p>
             <v-textarea label="bio" v-model="profile.profile.bio" v-if="edit" outlined></v-textarea>
           </v-card-text>
