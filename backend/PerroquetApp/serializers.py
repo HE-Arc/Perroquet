@@ -1,9 +1,10 @@
+from datetime import datetime
+
 from django.contrib.auth.password_validation import validate_password
-from rest_framework import serializers
+from rest_framework import serializers, fields
 from rest_framework.validators import UniqueValidator
 
-from .models import Message
-from .models import Profile
+from .models import Message, Follow, Profile, Like
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -16,17 +17,22 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
     profile = ProfileSerializer(read_only=False)
+    follow_count = serializers.SerializerMethodField(read_only=True)
+    followers_count = serializers.SerializerMethodField(read_only=True)
+
+    def get_follow_count(self,user):
+        return user.follow.count()
+
+    def get_followers_count(self,user):
+        return user.followers.count()
 
     class Meta:
         model = User
-        fields = ('id','username','first_name', 'last_name', 'profile','url'
+        fields = ('id','username','first_name', 'last_name', 'profile','follow_count','followers_count','url'
         )
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile')
-        # Unless the application properly enforces that this field is
-        # always set, the following could raise a `DoesNotExist`, which
-        # would need to be handled.
         profile = instance.profile
 
         print(profile_data)
@@ -49,17 +55,53 @@ class UserSerializer(serializers.ModelSerializer):
     #     return User.objects.create_user(**validated_data)
 
 
-class CreateMessageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Message
-        fields = ['id','content','author','replyTo',]
+#Inutile avec le perform_create dans la view
+# class CreateMessageSerializer(serializers.ModelSerializer):
+#     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+#     user = serializers.PrimaryKeyRelatedField(read_only=True)
+#
+#     class Meta:
+#         model = Message
+#         fields = ['id','content','user','replyTo']
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
-    author = PublicUserProfileSerializer(read_only=True)
-    author_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), source='user', write_only=True)
+    user = PublicUserProfileSerializer(read_only=True)
+    like_count = serializers.SerializerMethodField(read_only=True)
+    liked = serializers.SerializerMethodField(read_only=True)
+
+    def get_liked(self,msg):
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+            likes = Like.objects.filter(message_id=msg.id).filter(user__id=user.id)
+            if likes.count():
+                return True
+        return False
+
+    def get_like_count(self,msg):
+        return msg.like.count()
 
     class Meta:
         model = Message
-        fields = ['id','content','image','author_id','author','replyTo','url',]
-        # depth=1
+        fields = ['id','date','like_count','liked','content','image','user','replyTo','url',]
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(read_only=True)
+    user = PublicUserProfileSerializer(read_only=True)
+    following_id = serializers.IntegerField()
+    following = PublicUserProfileSerializer(read_only=True)
+
+    class Meta:
+        model = Follow
+        fields = ['id','user_id','user','following_id','following','date','url']
+
+class LikeSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(read_only=True)
+    user = PublicUserProfileSerializer(read_only=True)
+    message_id = serializers.IntegerField()
+    message = MessageSerializer(read_only=True)
+
+    class Meta:
+        model = Like
+        fields = ['id','user_id','user','message_id','message','date','url']

@@ -2,6 +2,7 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
+      <router-link :to="'/profile'" class="profileLink">My profile</router-link>
       <login></login>
         <filters></filters>
 

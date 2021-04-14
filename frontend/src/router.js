@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
+import store from "./store/index.js";
 
 Vue.use(Router);
 
@@ -35,5 +36,21 @@ export default new Router({
       name: "ResetPassword",
       component: () => import("./components/PasswordReset.vue")
     },
+    {
+      path: "/profile/:pId",
+      name: "profile",
+      component: () => import("./components/Profile.vue")
+    },
+    {
+      path: "/profile",
+      redirect: function() { return "/profile/" + store.state.userId},
+    },
+    {
+      path: "/logout",
+      redirect: function() { 
+        store.dispatch("logout");
+        return "/";
+      },
+    }
   ]
 });

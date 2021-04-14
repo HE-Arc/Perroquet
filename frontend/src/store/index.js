@@ -12,6 +12,7 @@ const state = {
     token: "",
     profiles: [],
     filter: "new",
+    userId: 0,
 }
 
 //to handle state
@@ -30,8 +31,16 @@ const actions = {
                     username: fields.username,
                     password: fields.password,
                 }).then((response) => {
+                    axios.defaults.headers.common = {
+                        "Authorization": 'Token ' + response.data.token
+                    };
                     commit('LOGIN', response.data.token);
-                    resolve();
+                    axios.get(BASE_URL + "users/me/").then((response) => {
+                        commit('SETID', response.data.id);
+                        resolve();
+                    }, (error) => {
+                        reject(error);
+                    })
                 }, (error) => {
                     reject(error);
                 });
@@ -39,7 +48,6 @@ const actions = {
     },
     logout({ commit }) {
         commit('LOGOUT');
-        this.$router.push("index")
     },
     register({ commit }, fields) {
         return new Promise((resolve, reject) => {
@@ -62,7 +70,15 @@ const actions = {
                     password: fields.password,
                 }).then((response) => {
                     commit('LOGIN', response.data.token);
-                    resolve();
+                    axios.defaults.headers.common = {
+                        "Authorization": 'Token ' + response.data.token
+                    };
+                    axios.get(BASE_URL + "users/me/").then((response) => {
+                        commit('SETID', response.data.id);
+                        resolve();
+                    }, (error) => {
+                        reject(error);
+                    })
                 }, (error) => {
                     reject(error);
                 });
@@ -73,7 +89,7 @@ const actions = {
             if (state.profiles[id] !== undefined) {
                 resolve(state.profiles[id]);
             } else {
-                axios.get(BASE_URL + "user/"+id+"/").then((response) => {
+                axios.get(BASE_URL + "users/"+id+"/").then((response) => {
                     commit('ADDPROFILE', response.data);
                     resolve(state.profiles[id]);
                 }, (error) => {
@@ -82,9 +98,49 @@ const actions = {
             }
         });
     },
+    saveProfile({ commit }, profile) {
+        return new Promise((resolve, reject) => {
+            axios.put(BASE_URL + "users/"+profile.id+"/", profile.data, {
+                headers: {
+                  "Content-Type": "multipart/form-data"
+                }
+            }
+            ).then((response) => {
+                commit('ADDPROFILE', response.data);
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    addMessage({ commit }, message) {
+        return new Promise((resolve, reject) => {
+            axios.post(BASE_URL + "messages/", message, {
+                headers: {
+                  "Content-Type": "multipart/form-data"
+                }
+            }
+            ).then(() => {
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
+        });
+    },
+    getProfileMessages({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            axios.get(BASE_URL + "users/"+id+"/messages/").then((response) => {
+                commit('ADDMESSAGESTOPROFILE', {m : response.data, id: id});
+                resolve(state.profiles[id].messages);
+            }, (error) => {
+                reject(error);
+            })
+        });
+    },
     passwordResetLink({commit}, fields) {
         return new Promise((resolve, reject) => {
-                axios.post(BASE_URL + "password_reset", {email: fields.email}).then(() => {
+                axios.post(BASE_URL + "password_reset/", {email: fields.email}).then(() => {
                     commit('LOGOUT');
                     resolve();
                 }, (error) => {
@@ -105,6 +161,29 @@ const actions = {
     filter({ commit }, filter) {
         commit('FILTER', filter);
     },
+    // eslint-disable-next-line no-unused-vars
+    addLike({commit}, messageId) {
+        return new Promise((resolve, reject) => {
+                axios.post(BASE_URL + "likes/", {message_id: messageId}).then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    removeLike({commit}, messageId) {
+        //FIXME add route to delete like from message ID
+        /*
+        return new Promise((resolve, reject) => {
+                axios.delete(BASE_URL + "likes/" + messageId + "/").then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+                */
+    },
 }
 
 //to handle mutations
@@ -116,17 +195,35 @@ const mutations = {
     LOGOUT(state) {
         state.token = "";
         localStorage.setItem("token", "");
+        axios.defaults.headers.common = {
+            "Authorization": ""
+        };
+        localStorage.setItem("userID", 0);
+        state.userId=0;
     },
     initialiseStore(state) {
         if (localStorage.getItem('token') != null) {
             state.token = localStorage.getItem('token');
+            if(state.token!=""){
+                axios.defaults.headers.common = {
+                    "Authorization": 'Token ' + state.token
+                };
+            }
+            state.userId = localStorage.getItem("userId")
         }
     },
     ADDPROFILE(state, profile) {
         state.profiles[profile.id] = profile;
     },
+    ADDMESSAGESTOPROFILE(state, {m, id}) {
+        state.profiles[id].messages = m.results;
+    },
     FILTER(state, filter) {
         state.filter = filter;
+    },
+    SETID(state, id) {
+        state.userId = id;
+        localStorage.setItem("userId", id);
     }
 }
 
