@@ -34,6 +34,11 @@
     </v-row>
     <v-row>
       <v-col>
+        <new-message v-on:new="reload()"></new-message>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <filters></filters>
       </v-col>
     </v-row>
@@ -43,9 +48,10 @@
             v-for="message in messages" :key="message.id"
             :text="message.content"
             :author="message.user.username"
-            v-bind:likes=9999
+            v-bind:likes="message.like_count"
             v-bind:liked="message.liked"
             v-bind:avatar="message.user.profile.image"
+            :img="message.image"
         />
       </v-col>
     </v-row>
@@ -55,8 +61,9 @@
 <script>
 import Filters from "@/components/Filters";
 import Message from "@/components/Message";
+import NewMessage from '@/components/NewMessage.vue';
 export default {
-  components: { Filters, Message },
+  components: { Filters, Message, NewMessage },
   name: "Profile",
 
   data: () => ({
@@ -105,6 +112,14 @@ export default {
           );
         }
       );
+    },
+    reload() {
+      var vm = this;
+      this.$store.dispatch("getProfileMessages", this.$route.params.pId).then(
+        (m) => {
+          vm.messages = m;
+        }
+      )
     },
     selectFile(f) {
       this.file=f

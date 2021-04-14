@@ -114,6 +114,21 @@ const actions = {
             })
         });
     },
+    // eslint-disable-next-line no-unused-vars
+    addMessage({ commit }, message) {
+        return new Promise((resolve, reject) => {
+            axios.post(BASE_URL + "messages/", message, {
+                headers: {
+                  "Content-Type": "multipart/form-data"
+                }
+            }
+            ).then(() => {
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
+        });
+    },
     getProfileMessages({ commit }, id) {
         return new Promise((resolve, reject) => {
             axios.get(BASE_URL + "users/"+id+"/messages/").then((response) => {
