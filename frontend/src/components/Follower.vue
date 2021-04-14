@@ -12,7 +12,7 @@
 import MiniProfile from "@/components/MiniProfile";
 export default {
   components: { MiniProfile },
-  name: "Follow",
+  name: "Follower",
 
   data: () => ({
     profiles: [] 
@@ -23,7 +23,7 @@ export default {
   },
   mounted() {
     var vm = this;
-    this.$store.dispatch("getFollow", this.$route.params.pId).then(
+    this.$store.dispatch("getFollower", this.$route.params.pId).then(
       (p) => {
         vm.profiles = p;
       }

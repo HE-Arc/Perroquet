@@ -194,6 +194,16 @@ const actions = {
                 })
         });
     },
+    // eslint-disable-next-line no-unused-vars
+    getFollower({commit}, userId) {
+        return new Promise((resolve, reject) => {
+                axios.get(BASE_URL + "users/" + userId + "/followers/").then((response) => {
+                    resolve(response.data.results);
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
 }
 
 //to handle mutations
