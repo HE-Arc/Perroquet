@@ -16,7 +16,7 @@
               @change="selectFile"
             ></v-file-input>
             <span v-if="!edit" class="pa-4">{{profile.username}}</span>
-            <v-text-field v-if="edit" label="Username" v-model="profile.username" outlined></v-text-field>
+            <v-text-field v-if="edit" label="Username" v-model="profile.username" :rules="usernameRules" outlined></v-text-field>
             <v-spacer></v-spacer>
             <v-btn v-if="ownProfile && !edit" @click="edit=true">Edit</v-btn>
             <v-btn v-if="ownProfile && edit" @click="saveProfile()">Save</v-btn>
@@ -86,7 +86,12 @@ export default {
         image: ""
       },
       url: ""
-    }
+    },
+    usernameRules: [
+      (v) => !!v || "username is required",
+      (v) => v.length <= 30 || "maximum lenght is 30",
+      (v) => v.length >= 5 || "minimum length is 5",
+    ],
   }),
   computed: {
     ownProfile: function() {
