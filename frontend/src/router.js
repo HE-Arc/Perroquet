@@ -69,6 +69,11 @@ export default new Router({
         store.dispatch("logout");
         return "/";
       },
-    }
+    },
+    {
+      path: "/settings",
+      name: "settings",
+      component: () => import("./components/Settings.vue")
+    },
   ]
 });
