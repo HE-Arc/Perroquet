@@ -1,0 +1,156 @@
+[
+{
+    "model": "auth.user",
+    "pk": 9,
+    "fields": {
+        "password": "pbkdf2_sha256$216000$hiTkDtD8iTPJ$8HErkxK0L4mNRcL6uyvWFZa575vHtDvKSqTHBUNHpvM=",
+        "last_login": "2021-03-19T07:20:50Z",
+        "is_superuser": false,
+        "username": "edarsel",
+        "first_name": "Antoine",
+        "last_name": "Lestrade",
+        "email": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2021-03-06T19:22:19Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 11,
+    "fields": {
+        "password": "pbkdf2_sha256$216000$jJTt5Ucim0F2$+7pcrlO1pxJw87kEUoKXzjn9G1GfAr3Fh8+43O1jjWI=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "jojoc4",
+        "first_name": "Jonatan",
+        "last_name": "Baumgartner",
+        "email": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2021-03-15T13:13:08Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 19,
+    "fields": {
+        "password": "pbkdf2_sha256$216000$j0VClhPn0i65$1E4vxCrjZ4UCzCtF8JnXGgMlMtl0QC2VlWy66FaXT6g=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "frictus",
+        "first_name": "Florian",
+        "last_name": "Feuillade",
+        "email": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2021-03-19T09:59:53Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 22,
+    "fields": {
+        "password": "pbkdf2_sha256$216000$U5gUyoTBfJX0$pVd/NoY8cTasggCGeSo7WS3IK3J3z+OOsrFYAUa4qmE=",
+        "last_login": "2021-03-22T15:52:59.418Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "admin",
+        "last_name": "admin",
+        "email": "admin@admin.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2021-03-22T15:52:32Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "PerroquetApp.message",
+    "pk": 3,
+    "fields": {
+        "author": 11,
+        "content": "salut �a va ?",
+        "replyTo": null,
+        "image": ""
+    }
+},
+{
+    "model": "PerroquetApp.message",
+    "pk": 4,
+    "fields": {
+        "author": 9,
+        "content": "ouais et toi ???",
+        "replyTo": 3,
+        "image": ""
+    }
+},
+{
+    "model": "PerroquetApp.message",
+    "pk": 9,
+    "fields": {
+        "author": 19,
+        "content": "yo",
+        "replyTo": 3,
+        "image": ""
+    }
+},
+{
+    "model": "PerroquetApp.profile",
+    "pk": 1,
+    "fields": {
+        "user": 9,
+        "bio": "My profile",
+        "image": "img/2021/03/22/sus_gnnF3Qo.png",
+        "location": "",
+        "birthDate": "1998-10-10"
+    }
+},
+{
+    "model": "PerroquetApp.profile",
+    "pk": 3,
+    "fields": {
+        "user": 11,
+        "bio": "",
+        "image": "",
+        "location": "",
+        "birthDate": null
+    }
+},
+{
+    "model": "PerroquetApp.profile",
+    "pk": 11,
+    "fields": {
+        "user": 19,
+        "bio": "",
+        "image": "",
+        "location": "",
+        "birthDate": null
+    }
+},
+{
+    "model": "PerroquetApp.profile",
+    "pk": 14,
+    "fields": {
+        "user": 22,
+        "bio": "",
+        "image": "",
+        "location": "",
+        "birthDate": null
+    }
+},
+{
+    "model": "authtoken.token",
+    "pk": "54169c98c57e8e40c56d4f1ca0dc8d107040fe12",
+    "fields": {
+        "user": 9,
+        "created": "2021-03-22T13:27:26.591Z"
+    }
+}
+]
