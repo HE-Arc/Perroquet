@@ -130,6 +130,7 @@ const actions = {
     },
     getProfileMessages({ commit }, id) {
         return new Promise((resolve, reject) => {
+            //FIXME add filter
             axios.get(BASE_URL + "users/"+id+"/messages/").then((response) => {
                 commit('ADDMESSAGESTOPROFILE', {m : response.data, id: id});
                 resolve(state.profiles[id].messages);
