@@ -204,6 +204,29 @@ const actions = {
                 })
         });
     },
+    // eslint-disable-next-line no-unused-vars
+    follow({commit}, following_id) {
+        return new Promise((resolve, reject) => {
+                axios.post(BASE_URL + "follows/", {following_id: following_id}).then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    unfollow({commit}, followed) {
+        //FIXME add route to delete follow from followed user id
+        /*
+        return new Promise((resolve, reject) => {
+                axios.delete(BASE_URL + "follows/" + followed + "/").then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+                */
+    },
 }
 
 //to handle mutations

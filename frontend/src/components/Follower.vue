@@ -2,7 +2,7 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
-        <mini-profile v-for="profile in profiles" :key="profile.id" :user="profile"></mini-profile>
+        <mini-profile v-for="profile in profiles" :key="profile.user.id" :user="profile.user"></mini-profile>
       </v-col>
     </v-row>
   </v-container>
