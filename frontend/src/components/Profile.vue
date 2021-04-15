@@ -20,6 +20,8 @@
             <v-spacer></v-spacer>
             <v-btn v-if="ownProfile && !edit" @click="edit=true">Edit</v-btn>
             <v-btn v-if="ownProfile && edit" @click="saveProfile()">Save</v-btn>
+            <v-btn v-if="!ownProfile && !profile.followed" @click="follow">Follow</v-btn>
+            <v-btn v-if="!ownProfile && profile.followed" @click="unfollow">Unfollow</v-btn>
           </v-card-title>
           <v-card-text>
             <v-spacer></v-spacer>
@@ -40,7 +42,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <new-message v-on:new="reload()"></new-message>
+        <new-message v-if="ownProfile" v-on:new="reload()"></new-message>
       </v-col>
     </v-row>
     <v-row>
@@ -77,6 +79,7 @@ export default {
       username: "",
       first_name: "",
       last_name: "",
+      followed: false,
       profile: {
         id: 0,
         bio: "",
@@ -125,6 +128,22 @@ export default {
     selectFile(f) {
       this.file=f
     },
+    follow(){
+      var vm = this;
+      this.$store.dispatch("follow", this.$route.params.pId).then(
+        () => {
+          vm.profile.followed = true;
+        }
+      )
+    },
+    unfollow(){
+      var vm = this;
+      this.$store.dispatch("unfollow", this.$route.params.pId).then(
+        () => {
+          vm.profile.followed = false;
+        }
+      )
+    }
   },
   mounted() {
     var vm = this;
