@@ -1,5 +1,6 @@
 # Create your views here.
-
+from django.db import models
+from django.db.models import Count
 from rest_framework import viewsets, mixins, generics, permissions
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -107,16 +108,17 @@ class MessageViewSet(viewsets.ModelViewSet):
     #     serializer.save(user = request.user)
     #     return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], url_name="home")
+    @action(detail=False, methods=['get'], url_name="home",permission_classes=[permissions.IsAuthenticated])
     def home(self, request):
-        discover_msg = Message.objects.order_by('date').reverse().all()
+        follows = Follow.objects.filter(user__id=request.user.id).values_list("following",flat=True)
+        home_msg = Message.objects.order_by('date').reverse().filter(user__in=follows)
 
-        page = self.paginate_queryset(discover_msg)
+        page = self.paginate_queryset(home_msg)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(discover_msg, many=True)
+        serializer = self.get_serializer(home_msg, many=True)
         return Response(serializer.data)
 
     @action(detail=False,methods=['get'],url_name="discover")
