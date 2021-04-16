@@ -96,7 +96,7 @@ export default {
       formdata.append('profile.id', vm.fields.profileId)
 
       //FIXME add mail
-      //formdata.append('email', vm.fields.email)
+      formdata.append('email', vm.fields.email)
       //FIXME password
       /**
        * if(vm.fields.password!=""){
