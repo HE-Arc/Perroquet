@@ -15,6 +15,8 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
+    email = serializers.EmailField(required=True)
+
     profile = ProfileSerializer(read_only=False)
     follow_count = serializers.SerializerMethodField(read_only=True)
     followers_count = serializers.SerializerMethodField(read_only=True)
@@ -40,7 +42,24 @@ class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','username','first_name', 'last_name', 'email','profile','followed','follow_count','followers_count','url'
         )
 
+    def validate_email(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+            raise serializers.ValidationError({"email": "This email is already in use."})
+        return value
+
+    def validate_username(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+            raise serializers.ValidationError({"username": "This username is already in use."})
+        return value
+
     def update(self, instance, validated_data):
+        user = self.context['request'].user
+
+        if user.pk != instance.pk:
+            raise serializers.ValidationError({"authorize": "You dont have permission for this user."})
+
         if 'profile' in validated_data:
             profile_data = validated_data.pop('profile')
             profile = instance.profile
