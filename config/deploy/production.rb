@@ -63,7 +63,8 @@ namespace :frontend do
     desc 'compile frontend'
     task :compile do
         on roles(:web) do |h|
-	        execute "cd #{release_path}/frontend && cp ../../shared/.env-front ./.env && npm install && npm run build"
+            execute "cp #{shared_path}/.env-front #{release_path}/frontend/.env"
+	        execute "cd #{release_path}/frontend  && npm install && npm run build"
 	    end
     end
 end
