@@ -4,6 +4,9 @@
       <v-col cols="12">
         <mini-profile v-for="profile in profiles" :key="profile.following.id" :user="profile.following"></mini-profile>
       </v-col>
+      <v-col v-if="!profilsAvailable" cols="12">
+        Nothing to show yet.
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -18,6 +21,13 @@ export default {
     profiles: [] 
   }),
   computed: {
+    profilsAvailable: function() {
+    // eslint-disable-next-line no-unused-vars
+      for (var k in this.profiles){
+        return true
+      }
+      return false;
+    }
   },
   methods: {
   },

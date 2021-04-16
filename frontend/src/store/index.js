@@ -150,8 +150,13 @@ const actions = {
         return new Promise((resolve, reject) => {
             //FIXME add filter
             axios.get(BASE_URL + "users/" + id + "/messages/").then((response) => {
-                commit('ADDMESSAGESTOPROFILE', {m: response.data, id: id});
-                resolve(state.profiles[id].messages);
+                // eslint-disable-next-line no-unused-vars
+                for (var m in response.data.results){
+                    commit('ADDMESSAGESTOPROFILE', {m: response.data, id: id});
+                    resolve(state.profiles[id].messages);
+                    break;
+                }
+                resolve([])
             }, (error) => {
                 reject(error);
             })
