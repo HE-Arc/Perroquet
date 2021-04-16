@@ -6,7 +6,7 @@
         <v-spacer></v-spacer>
         <v-btn value="hot"><v-icon left>mdi-arrow-up-bold</v-icon> Hot </v-btn>
         <v-spacer></v-spacer>
-        <v-btn value="like"><v-icon left>mdi-heart</v-icon> Like </v-btn>
+        <v-btn value="top"><v-icon left>mdi-heart</v-icon> Like </v-btn>
       </v-btn-toggle>
     </v-card-text>
   </v-card>

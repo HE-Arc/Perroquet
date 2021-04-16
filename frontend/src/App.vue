@@ -1,7 +1,6 @@
 <template>
   <v-app>
-    <v-system-bar app>
-    </v-system-bar>
+
     <navigationbar></navigationbar>
 
     <v-main>
