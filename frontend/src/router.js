@@ -26,6 +26,11 @@ export default new Router({
       component: () => import("./components/Home.vue")
     },
     {
+      path: "/friends",
+      name: "Friends",
+      component: () => import("./components/Friends.vue")
+    },
+    {
       path: "/signin",
       name: "Signin",
       component: () => import("./components/Signin.vue")
@@ -47,7 +52,7 @@ export default new Router({
     },
     {
       path: "/profile/:pId",
-      name: "profile",
+      name: "Profile",
       component: () => import("./components/Profile.vue")
     },
     {
@@ -56,7 +61,7 @@ export default new Router({
     },
     {
       path: "/follow/:pId",
-      name: "follow",
+      name: "Follow",
       component: () => import("./components/Follow.vue")
     },
     {
@@ -65,7 +70,7 @@ export default new Router({
     },
     {
       path: "/follower/:pId",
-      name: "follower",
+      name: "Follower",
       component: () => import("./components/Follower.vue")
     },
     {
@@ -74,13 +79,21 @@ export default new Router({
     },
     {
       path: "/logout",
-      name: "logout",
+      name: "Logout",
       component: () => import("./components/Logout.vue")
     },
     {
       path: "/settings",
-      name: "settings",
+      name: "Settings",
       component: () => import("./components/Settings.vue")
     },
+
+
+
+    {
+      path: '*',
+      name: "not Found",
+      component: () => import("./components/404.vue")
+    }
   ]
 });
