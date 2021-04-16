@@ -11,8 +11,7 @@ from django.db import models
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Profile
-        fields = ('id','bio','image'
-        )
+        fields = ('id','bio','image')
 
 
 class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -38,19 +37,19 @@ class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id','username','first_name', 'last_name', 'profile','followed','follow_count','followers_count','url'
+        fields = ('id','username','first_name', 'last_name', 'email','profile','followed','follow_count','followers_count','url'
         )
 
     def update(self, instance, validated_data):
-        profile_data = validated_data.pop('profile')
-        profile = instance.profile
+        if 'profile' in validated_data:
+            profile_data = validated_data.pop('profile')
+            profile = instance.profile
 
-        print(profile_data)
-        profileSerializer = ProfileSerializer(data=profile_data)
-        if (profileSerializer.is_valid()):
-            profile.bio = profile_data.get('bio',profile.bio)
-            profile.image = profile_data.get('image',profile.image)
-            profile.save()
+            profileSerializer = ProfileSerializer(data=profile_data)
+            if (profileSerializer.is_valid()):
+                profile.bio = profile_data.get('bio',profile.bio)
+                profile.image = profile_data.get('image',profile.image)
+                profile.save()
 
         return super(PublicUserProfileSerializer, self).update(instance,validated_data)
 
