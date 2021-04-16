@@ -138,6 +138,7 @@ export default {
       this.$store.dispatch("follow", this.$route.params.pId).then(
         () => {
           vm.profile.followed = true;
+          vm.profile.followers_count++
         }
       )
     },
@@ -146,6 +147,7 @@ export default {
       this.$store.dispatch("unfollow", this.$route.params.pId).then(
         () => {
           vm.profile.followed = false;
+          vm.profile.followers_count--
         }
       )
     }

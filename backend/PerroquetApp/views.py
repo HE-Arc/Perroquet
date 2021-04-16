@@ -1,7 +1,7 @@
 # Create your views here.
 from django.db import models
 from django.db.models import Count
-from rest_framework import viewsets, mixins, generics, permissions
+from rest_framework import viewsets, mixins, generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -143,6 +143,16 @@ class FollowViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @action(detail=False, methods=['delete'],url_path='(?P<pk>\d+)')
+    def unfollow(self, request, pk):
+        follow = Follow.objects.filter(user__id=request.user.id,following_id=pk).first()
+
+        if follow is not None:
+            follow.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
 class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
@@ -153,12 +163,12 @@ class LikeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-class LikeViewSet(viewsets.ModelViewSet):
-    queryset = Like.objects.all()
-    serializer_class = LikeSerializer
-    pagination_class = StandardResultsSetPagination
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwner]
-    http_method_names = ['get','post','delete']
+    @action(detail=False, methods=['delete'], url_path='(?P<pk>\d+)')
+    def unlike(self, request, pk):
+        like = Like.objects.filter(user__id=request.user.id, message_id=pk).first()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        if like is not None:
+            like.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_404_NOT_FOUND)
