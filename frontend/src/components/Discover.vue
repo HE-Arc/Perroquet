@@ -1,5 +1,6 @@
 <template>
   <div >
+    <filters v-on:input="requestMessages()"></filters>
     <message v-for="message in this.$store.state.messages"
     :key="message.id"
     v-bind:text="message.content"
@@ -13,12 +14,21 @@
 
 <script>
 import Message from "@/components/Message";
+import Filters from "@/components/Filters";
 export default {
   name: "Discover",
-  components: {Message},
+  components: {Filters, Message},
   beforeMount() {
-      this.$store.dispatch("requestDiscover", "test");
-  }
+    this.requestMessages()
+
+  },
+  methods: {
+    requestMessages(){
+this.$store.dispatch("requestDiscover", "test");
+    }
+  },
+
+
 
 }
 </script>

@@ -123,7 +123,7 @@ const actions = {
     // }
         async requestDiscover({ commit }){
         try{
-            const response = await axios.get(BASE_URL + "messages/discover/")
+            const response = await axios.get(BASE_URL + "messages/discover/?filter="+ state.filter)
                     commit('MESSAGES', response.data.results)
         }catch (error){
             console.log(error)
