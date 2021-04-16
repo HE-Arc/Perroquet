@@ -1,47 +1,101 @@
 <template>
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-    >
-      <v-sheet
-        color="grey lighten-4"
-        class="pa-4"
-      >
-        <v-avatar
-          class="mb-4"
-          color="grey darken-1"
-          size="64"
-        ></v-avatar>
-
-        <div>john@vuetifyjs.com</div>
-      </v-sheet>
+  <v-navigation-drawer app>
+    <v-layout column fill-height>
+      <v-card-title>
+        <router-link :to="'/'" class="profileLink">
+          <v-img :src="require('../assets/perroquet_logo/svg/Logo_DarkMagenta.svg')" height="64" width="64"
+                contain></v-img>
+          <span class="pa-4">Perroquet</span>
+        </router-link>
+      </v-card-title>
 
       <v-divider></v-divider>
 
       <v-list>
         <v-list-item
-          v-for="[icon, text] in links"
-          :key="icon"
-          link
+            v-for="item in navItems"
+            :key="item.title"
+            link
+            router
+            :to="item.link"
         >
           <v-list-item-icon>
-            <v-icon>{{ icon }}</v-icon>
+            <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ text }}</v-list-item-title>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-navigation-drawer>
+      <v-spacer></v-spacer>
+      <v-list>
+        <v-list-item link router :to="userLogin.link">
+          <v-avatar v-if="userIsAuthenticated" >
+            <v-img :src="pp" contain></v-img>
+          </v-avatar>
+          <v-list-item-icon v-else>
+            <v-icon >mdi-login</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            {{ userLogin.title }}
+          </v-list-item-content>
+        </v-list-item>
+
+      </v-list>
+    </v-layout>
+
+
+  </v-navigation-drawer>
 </template>
 
 <script>
 export default {
-name: "Navigationbar"
+  name: "Navigationbar",
+
+  data: () => ({
+    pp: "",
+    username: ""
+  }),
+
+  computed: {
+    navItems () {
+      let navItems = [
+        {icon: 'mdi-compass', title: 'Discover', link: '/discover'},
+      ]
+      if (this.userIsAuthenticated) {
+        navItems = [
+          {icon: 'mdi-home', title: 'Home', link: '/home'},
+          {icon: 'mdi-compass', title: 'Discover', link: '/discover'},
+          {icon: 'mdi-account-heart', title: 'Friends', link: '/friends'},
+          {icon: 'mdi-cog', title: 'Settings', link: '/settings'},
+          {icon: 'mdi-logout', title: 'Disconnect', link: '/logout'},
+        ]
+      }
+      return navItems
+    },
+    userIsAuthenticated () {
+      return this.$store.getters.authenticated
+    },
+    userLogin(){
+      return this.userIsAuthenticated ? {title: this.username, link:"/profile"} : {title: "Login", link:"/login"}
+    }
+
+  },mounted() {
+    if(this.$store.getters.authenticated){
+      var vm = this
+      this.$store.dispatch("getProfile", this.$store.state.userId).then((p) => {
+        vm.pp = p.profile.image
+        vm.username = p.username
+      })
+    }
+  }
 }
 </script>
 
 <style scoped>
-
+.profileLink{
+  text-decoration: none;
+  color: inherit;
+}
 </style>
