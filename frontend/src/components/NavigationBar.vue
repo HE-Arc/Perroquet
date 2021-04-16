@@ -2,9 +2,11 @@
   <v-navigation-drawer app>
     <v-layout column fill-height>
       <v-card-title>
-        <v-img :src="require('../assets/perroquet_logo/svg/Logo_DarkMagenta.svg')" height="64" width="64"
-               contain></v-img>
-        <span class="pa-4">Perroquet</span>
+        <router-link :to="'/'" class="profileLink">
+          <v-img :src="require('../assets/perroquet_logo/svg/Logo_DarkMagenta.svg')" height="64" width="64"
+                contain></v-img>
+          <span class="pa-4">Perroquet</span>
+        </router-link>
       </v-card-title>
 
       <v-divider></v-divider>
@@ -92,5 +94,8 @@ export default {
 </script>
 
 <style scoped>
-
+.profileLink{
+  text-decoration: none;
+  color: inherit;
+}
 </style>

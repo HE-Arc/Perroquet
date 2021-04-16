@@ -1,5 +1,6 @@
 <template>
 <div>
+  <new-message v-on:new="requestMessages()"></new-message>
   <div v-if="!messagesAvailable">
     No message to show you yet.
   </div>
@@ -18,9 +19,10 @@
 <script>
 import Message from "@/components/Message";
 import Filters from "@/components/Filters";
+import NewMessage from '@/components/NewMessage.vue';
 export default {
   name: "Home",
-  components: {Filters, Message},
+  components: {Filters, Message, NewMessage },
   computed: {
     messagesAvailable: function() {
     // eslint-disable-next-line no-unused-vars

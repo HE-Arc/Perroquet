@@ -3,7 +3,7 @@
     <v-card-title>
         Say something:
     </v-card-title>
-    <v-card-text>
+    <v-card-text v-if="add">
         <v-alert v-if="error" color="red" type="warning">Error</v-alert>
         <v-form v-model="valid">
             <v-textarea
@@ -23,9 +23,13 @@
             ></v-file-input>
         </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions v-if="add">
             <v-spacer></v-spacer>
-        <v-btn class="mr-4" @click="submit" :disabled="!valid"> Create new post </v-btn>
+        <v-btn class="mr-4" @click="submit" :disabled="!valid"> Save </v-btn>
+        </v-card-actions>
+        <v-card-actions v-if="!add">
+            <v-spacer></v-spacer>
+        <v-btn class="mr-4" @click="add=true"> Create a new post </v-btn>
         </v-card-actions>
   </v-card>
 </template>
@@ -36,6 +40,7 @@ export default {
   data: () => ({
       valid: false,
       error: false,
+      add: false,
       fields:{
           text: "",
           img: ""
@@ -62,6 +67,7 @@ export default {
           vm.$emit("new")
           vm.fields.text=""
           vm.fields.img=""
+          vm.add=false
         }
       );
       },
