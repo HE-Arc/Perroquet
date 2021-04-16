@@ -56,36 +56,36 @@ const actions = {
     register({commit}, fields) {
         return new Promise((resolve, reject) => {
             axios.post(BASE_URL + 'register/',
-                {
-                    username: fields.username,
-                    password: fields.password,
-                    password2: fields.password,
-                    email: fields.email,
-                    first_name: fields.firstname,
-                    last_name: fields.lastname
-                }).then(() => {
-                resolve();
-            }, (error) => {
-                reject(error);
-            });
-            axios.post(BASE_URL + 'token/',
+            {
+                username: fields.username,
+                password: fields.password,
+                password2: fields.password,
+                email: fields.email,
+                first_name: fields.firstname,
+                last_name: fields.lastname
+            }).then(() => {
+                axios.post(BASE_URL + 'token/',
                 {
                     username: fields.username,
                     password: fields.password,
                 }).then((response) => {
-                commit('LOGIN', response.data.token);
-                axios.defaults.headers.common = {
-                    "Authorization": 'Token ' + response.data.token
-                };
-                axios.get(BASE_URL + "users/me/").then((response) => {
-                    commit('SETID', response.data.id);
-                    resolve();
+                    commit('LOGIN', response.data.token);
+                    axios.defaults.headers.common = {
+                        "Authorization": 'Token ' + response.data.token
+                    };
+                    axios.get(BASE_URL + "users/me/").then((response) => {
+                        commit('SETID', response.data.id);
+                        resolve();
+                    }, (error) => {
+                        reject(error);
+                    })
                 }, (error) => {
                     reject(error);
-                })
+                });
             }, (error) => {
                 reject(error);
             });
+            
         });
     },
     getProfile({commit}, id) {
@@ -284,7 +284,6 @@ const mutations = {
         state.userId = id;
         localStorage.setItem("userId", id);
     }
-
 }
 
 //export store module
