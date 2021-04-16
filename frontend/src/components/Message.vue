@@ -17,7 +17,7 @@
     </v-card-title>
     <v-card-text>
       <p class="text-justify">{{ message.content }}</p>
-      <v-img :src="message.image"></v-img>
+      <v-img v-if="message.image" :src="message.image" :height="250" contain position="left"></v-img>
     </v-card-text>
   </v-card>
 </template>
