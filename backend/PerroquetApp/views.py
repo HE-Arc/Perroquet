@@ -133,6 +133,22 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(discover_msg, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'], url_name="friends", permission_classes=[permissions.IsAuthenticated])
+    def friends(self, request):
+        follows = Follow.objects.filter(user__id=request.user.id).values_list("following", flat=True)
+        followers = Follow.objects.filter(following_id=request.user.id).values_list("user", flat=True)
+        friends = [value for value in follows if value in followers]
+        print(friends)
+        home_msg = Message.objects.order_by('date').reverse().filter(user__in=friends)
+
+        page = self.paginate_queryset(home_msg)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(home_msg, many=True)
+        return Response(serializer.data)
+
 class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
