@@ -65,10 +65,8 @@ export default new Router({
     },
     {
       path: "/logout",
-      redirect: function() { 
-        //store.dispatch("logout");
-        return "/";
-      },
+      name: "logout",
+      component: () => import("./components/Logout.vue")
     },
     {
       path: "/settings",
