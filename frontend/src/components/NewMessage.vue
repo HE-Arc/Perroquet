@@ -60,6 +60,8 @@ export default {
         this.$store.dispatch("addMessage", formdata).then(
         () => {
           vm.$emit("new")
+          vm.fields.text=""
+          vm.fields.img=""
         }
       );
       },
