@@ -174,6 +174,21 @@ export default {
         vm.messages = m;
       }
     )
+  },
+  watch: {
+    '$route.params.pId': function(id) {
+      var vm = this;
+      this.$store.dispatch("getProfile", id).then(
+        (p) => {
+          vm.profile = p;
+        }
+      );
+      this.$store.dispatch("getProfileMessages", id).then(
+        (m) => {
+          vm.messages = m;
+        }
+      )
+    }
   }
 };
 </script>
