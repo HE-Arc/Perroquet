@@ -11,11 +11,12 @@ from django.db import models
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Profile
-        fields = ('id','bio','image'
-        )
+        fields = ('id','bio','image')
 
 
 class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
+    email = serializers.EmailField(required=True)
+
     profile = ProfileSerializer(read_only=False)
     follow_count = serializers.SerializerMethodField(read_only=True)
     followers_count = serializers.SerializerMethodField(read_only=True)
@@ -38,19 +39,36 @@ class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id','username','first_name', 'last_name', 'profile','followed','follow_count','followers_count','url'
+        fields = ('id','username','first_name', 'last_name', 'email','profile','followed','follow_count','followers_count','url'
         )
 
-    def update(self, instance, validated_data):
-        profile_data = validated_data.pop('profile')
-        profile = instance.profile
+    def validate_email(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+            raise serializers.ValidationError({"email": "This email is already in use."})
+        return value
 
-        print(profile_data)
-        profileSerializer = ProfileSerializer(data=profile_data)
-        if (profileSerializer.is_valid()):
-            profile.bio = profile_data.get('bio',profile.bio)
-            profile.image = profile_data.get('image',profile.image)
-            profile.save()
+    def validate_username(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+            raise serializers.ValidationError({"username": "This username is already in use."})
+        return value
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+
+        if user.pk != instance.pk:
+            raise serializers.ValidationError({"authorize": "You dont have permission for this user."})
+
+        if 'profile' in validated_data:
+            profile_data = validated_data.pop('profile')
+            profile = instance.profile
+
+            profileSerializer = ProfileSerializer(data=profile_data)
+            if (profileSerializer.is_valid()):
+                profile.bio = profile_data.get('bio',profile.bio)
+                profile.image = profile_data.get('image',profile.image)
+                profile.save()
 
         return super(PublicUserProfileSerializer, self).update(instance,validated_data)
 
