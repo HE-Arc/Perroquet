@@ -95,7 +95,6 @@ export default {
       formdata.append('last_name', vm.fields.lastname)
       formdata.append('profile.id', vm.fields.profileId)
 
-      //FIXME add mail
       formdata.append('email', vm.fields.email)
       //FIXME password
       /**
@@ -113,10 +112,13 @@ export default {
                 vm.fields.email = p.email;
                 vm.username = p.username;
                 vm.profileId = p.profile.id;
+                vm.error=false
             }
           );
-        }
-      );
+        }, 
+      ).catch(() => {
+        vm.error = true
+      });
     },
   },
   mounted(){
