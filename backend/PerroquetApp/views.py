@@ -25,13 +25,13 @@ LIKE_PONDERATION = Case(
                     )
 
 def sortMessages(obj, sortBy):
-    if sortBy == "hot":
+    if sortBy == "/hot":
         # Tri selon le nombre de like. Un like récent a une pondération + élevée
         return obj.annotate(
             count=Sum(LIKE_PONDERATION)
         ).order_by('count').reverse()
 
-    elif sortBy == "top":
+    elif sortBy == "/top":
         # Tri selon le nombre de like
         return obj.annotate(count=Count('like')).order_by('count').reverse()
 
@@ -67,8 +67,8 @@ class UserViewSet(mixins.RetrieveModelMixin,
         serializer = PublicUserProfileSerializer(request.user,context={'request': request}, many=False)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'], url_name="messages", url_path='messages/(?P<sortBy>[a-z]*)')
-    def messages(self, request,pk, sortBy):
+    @action(detail=True, methods=['get'], url_name="messages", url_path='messages(?P<sortBy>/[a-z]*)?')
+    def messages(self, request,pk, sortBy=None):
         user_msg = sortMessages(Message.objects.filter(user__id=pk), sortBy)
 
         page = self.paginate_queryset(user_msg)
@@ -117,8 +117,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     @action(detail=False, methods=['get'], url_name="home",permission_classes=[permissions.IsAuthenticated],
-            url_path='home/(?P<sortBy>[a-z]*)')
-    def home(self, request,sortBy):
+            url_path='home(?P<sortBy>/[a-z]*)?')
+    def home(self, request,sortBy=None):
         follows = Follow.objects.filter(user__id=request.user.id).values_list("following",flat=True)
         home_msg = sortMessages(Message.objects.filter(user__in=follows), sortBy)
 
@@ -130,8 +130,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(home_msg, many=True)
         return Response(serializer.data)
 
-    @action(detail=False,methods=['get'], url_name="discover",url_path='discover/(?P<sortBy>[a-z]*)')
-    def discover(self, request, sortBy):
+    @action(detail=False,methods=['get'], url_name="discover",url_path='discover(?P<sortBy>/[a-z]*)?')
+    def discover(self, request, sortBy=None):
         discover_msg = sortMessages(Message.objects, sortBy)
 
         page = self.paginate_queryset(discover_msg)
@@ -143,8 +143,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_name="friends", permission_classes=[permissions.IsAuthenticated],
-            url_path='friends/(?P<sortBy>[a-z]*)')
-    def friends(self, request, sortBy):
+            url_path='friends(?P<sortBy>/[a-z]*)?')
+    def friends(self, request, sortBy=None):
         follows = Follow.objects.filter(user__id=request.user.id).values_list("following", flat=True)
         followers = Follow.objects.filter(following_id=request.user.id).values_list("user", flat=True)
         friends = [value for value in follows if value in followers]
