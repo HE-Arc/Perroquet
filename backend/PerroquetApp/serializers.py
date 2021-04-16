@@ -1,3 +1,5 @@
+import os
+import random
 from datetime import datetime
 
 from django.contrib.auth.password_validation import validate_password
@@ -15,7 +17,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PublicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
-    email = serializers.EmailField(required=True)
+    email = serializers.EmailField(required=False,allow_null=False)
 
     profile = ProfileSerializer(read_only=False)
     follow_count = serializers.SerializerMethodField(read_only=True)

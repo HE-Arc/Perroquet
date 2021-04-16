@@ -1,3 +1,5 @@
+import os
+import random
 from datetime import datetime
 
 from django.contrib.auth.models import User
@@ -28,6 +30,9 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     )
 
 
+# Message
+# =======================================================
+
 class Message(models.Model):
     """Table schema to store articles."""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="message")
@@ -39,6 +44,11 @@ class Message(models.Model):
 
     def __str__(self):
         return '%s' % self.content
+
+
+
+# Like
+# =======================================================
 
 class Like(models.Model):
     """Table schema to store articles."""
@@ -52,11 +62,19 @@ class Like(models.Model):
     def __str__(self):
         return User.objects.get(pk=self.user_id).username +" like "+ str(Message.objects.get(pk=self.message_id).id)
 
+
+# Profile
+# =======================================================
+
+def get_random_default_pp():
+    pp = random.choice(os.listdir("./media/img/default"))
+    return f'img/default/{pp}'
+
 class Profile(models.Model):
     """Table schema to store profile."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
-    image = models.ImageField(upload_to ='img/%Y/%m/%d/',blank=True,null=True)
+    image = models.ImageField(upload_to ='img/%Y/%m/%d/',blank=True,null=True,default=get_random_default_pp)
     location = models.CharField(max_length=30, blank=True)
     birthDate = models.DateField(null=True, blank=True)
 
@@ -68,6 +86,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+# Follow
+# =======================================================
 
 class Follow(models.Model):
     """Table schema to store follow."""
