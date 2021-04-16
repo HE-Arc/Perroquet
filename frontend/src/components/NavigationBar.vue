@@ -1,5 +1,11 @@
 <template>
-  <v-navigation-drawer app>
+  <div>
+      <v-app-bar dense app>
+   <v-app-bar-nav-icon @click="drawer = !drawer" ></v-app-bar-nav-icon>
+      <v-app-bar-title>Perroquet</v-app-bar-title>
+    </v-app-bar>
+
+  <v-navigation-drawer  v-model="drawer" app>
     <v-layout column fill-height>
       <v-card-title>
         <router-link :to="'/'" class="profileLink">
@@ -47,6 +53,7 @@
 
 
   </v-navigation-drawer>
+    </div>
 </template>
 
 <script>
@@ -54,6 +61,7 @@ export default {
   name: "Navigationbar",
 
   data: () => ({
+    drawer : true,
     pp: "",
     username: ""
   }),
