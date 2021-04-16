@@ -51,11 +51,14 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col v-if="messagesAvailable">
         <message
             v-for="message in messages" :key="message.id"
             :message="message"
         />
+      </v-col>
+      <v-col v-if="!messagesAvailable">
+        This account doesn't have any post yet.
       </v-col>
     </v-row>
   </v-container>
@@ -96,6 +99,13 @@ export default {
   computed: {
     ownProfile: function() {
       return this.$store.state.userId==this.profile.id
+    },
+    messagesAvailable: function() {
+    // eslint-disable-next-line no-unused-vars
+      for (var k in this.messages){
+        return true
+      }
+      return false;
     }
   },
   methods: {
@@ -138,6 +148,7 @@ export default {
       this.$store.dispatch("follow", this.$route.params.pId).then(
         () => {
           vm.profile.followed = true;
+          vm.profile.followers_count++
         }
       )
     },
@@ -146,6 +157,7 @@ export default {
       this.$store.dispatch("unfollow", this.$route.params.pId).then(
         () => {
           vm.profile.followed = false;
+          vm.profile.followers_count--
         }
       )
     }

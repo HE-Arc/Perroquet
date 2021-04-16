@@ -118,6 +118,20 @@ const actions = {
         });
     },
     // eslint-disable-next-line no-unused-vars
+    changePassword({commit}, password) {
+        return new Promise((resolve, reject) => {
+            axios.put(BASE_URL + "change_password/" + password.id + "/", {
+                password: password.new,
+                password2: password.new,
+                old_password: password.old
+            }).then(() => {
+                resolve();
+            }, () => {
+                reject();
+            })
+        })
+    },
+    // eslint-disable-next-line no-unused-vars
     addMessage({commit}, message) {
         return new Promise((resolve, reject) => {
             axios.post(BASE_URL + "messages/", message, {
@@ -136,8 +150,13 @@ const actions = {
         return new Promise((resolve, reject) => {
             //FIXME add filter
             axios.get(BASE_URL + "users/" + id + "/messages/").then((response) => {
-                commit('ADDMESSAGESTOPROFILE', {m: response.data, id: id});
-                resolve(state.profiles[id].messages);
+                // eslint-disable-next-line no-unused-vars
+                for (var m in response.data.results){
+                    commit('ADDMESSAGESTOPROFILE', {m: response.data, id: id});
+                    resolve(state.profiles[id].messages);
+                    break;
+                }
+                resolve([])
             }, (error) => {
                 reject(error);
             })
@@ -186,8 +205,6 @@ const actions = {
     },
     // eslint-disable-next-line no-unused-vars
     removeLike({commit}, messageId) {
-        //FIXME add route to delete like from message ID
-        /*
         return new Promise((resolve, reject) => {
                 axios.delete(BASE_URL + "likes/" + messageId + "/").then(() => {
                     resolve();
@@ -195,7 +212,6 @@ const actions = {
                     reject(error);
                 })
         });
-                */
     },
     // eslint-disable-next-line no-unused-vars
     getFollow({commit}, userId) {
@@ -229,8 +245,6 @@ const actions = {
     },
     // eslint-disable-next-line no-unused-vars
     unfollow({commit}, followed) {
-        //FIXME add route to delete follow from followed user id
-        /*
         return new Promise((resolve, reject) => {
                 axios.delete(BASE_URL + "follows/" + followed + "/").then(() => {
                     resolve();
@@ -238,7 +252,6 @@ const actions = {
                     reject(error);
                 })
         });
-                */
     },
 }
 

@@ -5,14 +5,14 @@ from rest_framework.validators import UniqueValidator
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-
+    username = serializers.CharField(write_only=True,required=True,validators=[UniqueValidator(queryset=User.objects.all())])
     email = serializers.EmailField(required=True,validators=[UniqueValidator(queryset=User.objects.all())])
     password = serializers.CharField(write_only=True,required=True,validators=[validate_password])
     password2 = serializers.CharField(write_only=True,required=True)
 
     class Meta:
         model=User
-        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name')
+        fields = ('email', 'username' , 'first_name', 'last_name', 'password', 'password2')
         extra_kwargs = {
             'first_name': {'required': False},
             'last_name': {'required': False}
@@ -35,3 +35,35 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=True)
+    old_password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ('old_password', 'password', 'password2')
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+
+        return attrs
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError({"old_password": "Old password is not correct"})
+        return value
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+
+        if user.pk != instance.pk:
+            raise serializers.ValidationError({"authorize": "You dont have permission for this user."})
+
+        instance.set_password(validated_data['password'])
+        instance.save()
+
+        return instance

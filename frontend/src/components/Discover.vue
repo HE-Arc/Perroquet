@@ -1,11 +1,16 @@
 <template>
-  <div >
+<div>
+  <div v-if="!messagesAvailable">
+    No message to show you yet.
+  </div>
+  <div v-if="messagesAvailable">
     <filters v-on:input="requestMessages()"></filters>
     <message v-for="message in this.$store.state.messages"
     :key="message.id"
     :message="message">
 
     </message>
+  </div>
 </div>
 
 </template>
@@ -16,6 +21,15 @@ import Filters from "@/components/Filters";
 export default {
   name: "Discover",
   components: {Filters, Message},
+  computed: {
+    messagesAvailable: function() {
+    // eslint-disable-next-line no-unused-vars
+      for (var k in this.$store.state.messages){
+        return true
+      }
+      return false;
+    }
+  },
   beforeMount() {
     this.requestMessages()
 
