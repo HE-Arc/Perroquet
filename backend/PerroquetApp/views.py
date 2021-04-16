@@ -47,7 +47,6 @@ class UserViewSet(mixins.RetrieveModelMixin,
 
     @action(detail=True, methods=['get'], url_name="messages")
     def messages(self, request,pk):
-
         user_msg = Message.objects.order_by('date').filter(user__id=pk).reverse().all()
 
         page = self.paginate_queryset(user_msg)
