@@ -9,12 +9,21 @@ export default new Router({
   routes: [
     {
       path: "/",
-      redirect: '/discover'
+      redirect: '/home'
+    },
+    {
+      path: "/index",
+      redirect: '/home'
     },
     {
       path: "/discover",
       name: "Discover",
       component: () => import("./components/Discover.vue")
+    },
+    {
+      path: "/home",
+      name: "Home",
+      component: () => import("./components/Home.vue")
     },
     {
       path: "/signin",

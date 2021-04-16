@@ -1,5 +1,4 @@
 <template>
-  <v-container>
     <v-row class="text-center">
       <v-col v-if="profilsAvailable" cols="12">
         <mini-profile v-for="profile in profiles" :key="profile.following.id" :user="profile.following"></mini-profile>
@@ -8,7 +7,6 @@
         Nothing to show yet.
       </v-col>
     </v-row>
-  </v-container>
 </template>
 
 <script>

@@ -148,8 +148,7 @@ const actions = {
     },
     getProfileMessages({commit}, id) {
         return new Promise((resolve, reject) => {
-            //FIXME add filter
-            axios.get(BASE_URL + "users/" + id + "/messages/").then((response) => {
+            axios.get(BASE_URL + "users/" + id + "/messages/?filter=" + state.filter).then((response) => {
                 // eslint-disable-next-line no-unused-vars
                 for (var m in response.data.results){
                     commit('ADDMESSAGESTOPROFILE', {m: response.data, id: id});
@@ -188,6 +187,14 @@ const actions = {
     async requestDiscover({commit}) {
         try {
             const response = await axios.get(BASE_URL + "messages/discover/?filter=" + state.filter)
+            commit('MESSAGES', response.data.results)
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    async requestHome({commit}) {
+        try {
+            const response = await axios.get(BASE_URL + "messages/home/?filter=" + state.filter)
             commit('MESSAGES', response.data.results)
         } catch (error) {
             console.log(error)
