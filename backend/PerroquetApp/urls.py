@@ -26,6 +26,5 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('token/', obtain_auth_token, name='api_token_auth'),
     # path('token/refresh/', obtain_auth_token, name='api_token_auth'),
-    path('hello/', views.HelloView.as_view(), name='hello'),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 ]
