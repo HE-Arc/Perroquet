@@ -100,7 +100,7 @@ export default {
   methods: {
     submit() {
       this.$store.dispatch("register", this.fields).then(() => {
-        this.$router.push("/index");
+        this.$router.push("/profile");
       }).catch(()=>{
         this.error = true
       });
