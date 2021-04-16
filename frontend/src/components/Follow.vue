@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="text-center">
-      <v-col cols="12">
+      <v-col v-if="profilsAvailable" cols="12">
         <mini-profile v-for="profile in profiles" :key="profile.following.id" :user="profile.following"></mini-profile>
       </v-col>
       <v-col v-if="!profilsAvailable" cols="12">
