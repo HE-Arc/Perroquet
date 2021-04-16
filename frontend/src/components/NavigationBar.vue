@@ -52,7 +52,8 @@ export default {
   name: "Navigationbar",
 
   data: () => ({
-    pp: ""
+    pp: "",
+    username: ""
   }),
 
   computed: {
@@ -75,7 +76,7 @@ export default {
       return this.$store.getters.authenticated
     },
     userLogin(){
-      return this.userIsAuthenticated ? {title: "Username", link:"/profile"} : {title: "Login", link:"/login"}
+      return this.userIsAuthenticated ? {title: this.username, link:"/profile"} : {title: "Login", link:"/login"}
     }
 
   },mounted() {
@@ -83,6 +84,7 @@ export default {
       var vm = this
       this.$store.dispatch("getProfile", this.$store.state.userId).then((p) => {
         vm.pp = p.profile.image
+        vm.username = p.username
       })
     }
   }

@@ -254,7 +254,7 @@ const mutations = {
         axios.defaults.headers.common = {
             "Authorization": ""
         };
-        localStorage.setItem("userID", 0);
+        localStorage.setItem("userId", 0);
         state.userId = 0;
     },
     initialiseStore(state) {
