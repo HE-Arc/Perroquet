@@ -50,14 +50,15 @@
         <filters v-on:input="reload()"></filters>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col v-if="messagesAvailable">
-        <message
-            v-for="message in messages" :key="message.id"
-            :message="message"
-        />
+    <div v-if="messagesAvailable">
+    <v-row v-for="message in messages" :key="message.id">
+      <v-col >
+        <message :message="message"/>
       </v-col>
-      <v-col v-if="!messagesAvailable">
+    </v-row>
+    </div>
+    <v-row v-if="!messagesAvailable">
+      <v-col>
         This account doesn't have any post yet.
       </v-col>
     </v-row>
