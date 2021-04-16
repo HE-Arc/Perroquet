@@ -28,11 +28,20 @@
                 required
               ></v-text-field>
               <v-text-field
-                v-model="fields.password"
+                v-model="fields.opassword"
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
                 :rules="rules.passwordRules"
-                label="Enter password to change it"
+                label="Enter old password to change it"
+                hint="At least 8 characters"
+                @click:append="show = !show"
+              ></v-text-field>
+              <v-text-field
+                v-model="fields.npassword"
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show ? 'text' : 'password'"
+                :rules="rules.passwordRules"
+                label="Enter new password to change it"
                 hint="At least 8 characters"
                 @click:append="show = !show"
               ></v-text-field>
@@ -62,7 +71,8 @@ export default {
 
     fields: {
       email: "",
-      password: "",
+      npassword: "",
+      opassword: "",
       firstname: "",
       lastname: "",
     },
@@ -102,7 +112,7 @@ export default {
        * 
        * }
        */
-
+      
       this.$store.dispatch("saveProfile", {data:formdata, id: this.$store.state.userId}).then(
         () => {
           this.$store.dispatch("getProfile", this.$store.state.userId).then(
@@ -116,6 +126,15 @@ export default {
             }
           );
         }, 
+      ).catch(() => {
+        vm.error = true
+      });
+
+      this.$store.dispatch("changePassword", {old:vm.fields.opassword, new:vm.fields.npassword, id:vm.profileId}).then(
+        () => {
+          vm.fields.opassword = ""
+          vm.fields.npassword = ""
+        }
       ).catch(() => {
         vm.error = true
       });

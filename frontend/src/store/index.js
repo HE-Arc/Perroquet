@@ -118,6 +118,20 @@ const actions = {
         });
     },
     // eslint-disable-next-line no-unused-vars
+    changePassword({commit}, password) {
+        return new Promise((resolve, reject) => {
+            axios.put(BASE_URL + "change_password/" + password.id + "/", {
+                password: password.new,
+                password2: password.new,
+                old_password: password.old
+            }).then(() => {
+                resolve();
+            }, () => {
+                reject();
+            })
+        })
+    },
+    // eslint-disable-next-line no-unused-vars
     addMessage({commit}, message) {
         return new Promise((resolve, reject) => {
             axios.post(BASE_URL + "messages/", message, {
