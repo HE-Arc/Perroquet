@@ -200,8 +200,6 @@ const actions = {
     },
     // eslint-disable-next-line no-unused-vars
     removeLike({commit}, messageId) {
-        //FIXME add route to delete like from message ID
-        /*
         return new Promise((resolve, reject) => {
                 axios.delete(BASE_URL + "likes/" + messageId + "/").then(() => {
                     resolve();
@@ -209,7 +207,6 @@ const actions = {
                     reject(error);
                 })
         });
-                */
     },
     // eslint-disable-next-line no-unused-vars
     getFollow({commit}, userId) {

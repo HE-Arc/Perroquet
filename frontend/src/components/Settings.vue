@@ -106,12 +106,6 @@ export default {
       formdata.append('profile.id', vm.fields.profileId)
 
       formdata.append('email', vm.fields.email)
-      //FIXME password
-      /**
-       * if(vm.fields.password!=""){
-       * 
-       * }
-       */
       
       this.$store.dispatch("saveProfile", {data:formdata, id: this.$store.state.userId}).then(
         () => {
