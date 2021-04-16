@@ -1,28 +1,77 @@
 import Vue from "vue";
 import Router from "vue-router";
+import store from "./store/index.js";
 
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: "/",
-      redirect: '/index'
+      redirect: '/discover'
     },
     {
-      path: "/create",
-      name: "create",
-      component: () => import("./components/Create.vue")
+      path: "/discover",
+      name: "Discover",
+      component: () => import("./components/Discover.vue")
     },
     {
-      path: "/edit/:id",
-      name: "edit",
-      component: () => import("./components/Edit.vue")
+      path: "/signin",
+      name: "Signin",
+      component: () => import("./components/Signin.vue")
     },
     {
-      path: "/index",
-      name: "HelloWorld",
-      component: () => import("./components/HelloWorld.vue")
+      path: "/login",
+      name: "Login",
+      component: () => import("./components/Login.vue")
+    },
+    {
+      path: "/passwordResetLink",
+      name: "PasswordResetLink",
+      component: () => import("./components/PasswordResetLink.vue")
+    },
+    {
+      path: "/reset-password/:token",
+      name: "ResetPassword",
+      component: () => import("./components/PasswordReset.vue")
+    },
+    {
+      path: "/profile/:pId",
+      name: "profile",
+      component: () => import("./components/Profile.vue")
+    },
+    {
+      path: "/profile",
+      redirect: function() { return "/profile/" + store.state.userId},
+    },
+    {
+      path: "/follow/:pId",
+      name: "follow",
+      component: () => import("./components/Follow.vue")
+    },
+    {
+      path: "/follow",
+      redirect: function() { return "/follow/" + store.state.userId},
+    },
+    {
+      path: "/follower/:pId",
+      name: "follower",
+      component: () => import("./components/Follower.vue")
+    },
+    {
+      path: "/follower",
+      redirect: function() { return "/follower/" + store.state.userId},
+    },
+    {
+      path: "/logout",
+      name: "logout",
+      component: () => import("./components/Logout.vue")
+    },
+    {
+      path: "/settings",
+      name: "settings",
+      component: () => import("./components/Settings.vue")
     },
   ]
 });
