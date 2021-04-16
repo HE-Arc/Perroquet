@@ -79,10 +79,12 @@ export default {
     }
 
   },mounted() {
+    if(this.$store.getters.authenticated){
       var vm = this
       this.$store.dispatch("getProfile", this.$store.state.userId).then((p) => {
         vm.pp = p.profile.image
       })
+    }
   }
 }
 </script>
