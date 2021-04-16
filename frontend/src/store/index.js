@@ -240,8 +240,6 @@ const actions = {
     },
     // eslint-disable-next-line no-unused-vars
     unfollow({commit}, followed) {
-        //FIXME add route to delete follow from followed user id
-        /*
         return new Promise((resolve, reject) => {
                 axios.delete(BASE_URL + "follows/" + followed + "/").then(() => {
                     resolve();
@@ -249,7 +247,6 @@ const actions = {
                     reject(error);
                 })
         });
-                */
     },
 }
 
