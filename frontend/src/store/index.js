@@ -56,36 +56,36 @@ const actions = {
     register({commit}, fields) {
         return new Promise((resolve, reject) => {
             axios.post(BASE_URL + 'register/',
-                {
-                    username: fields.username,
-                    password: fields.password,
-                    password2: fields.password,
-                    email: fields.email,
-                    first_name: fields.firstname,
-                    last_name: fields.lastname
-                }).then(() => {
-                resolve();
-            }, (error) => {
-                reject(error);
-            });
-            axios.post(BASE_URL + 'token/',
+            {
+                username: fields.username,
+                password: fields.password,
+                password2: fields.password,
+                email: fields.email,
+                first_name: fields.firstname,
+                last_name: fields.lastname
+            }).then(() => {
+                axios.post(BASE_URL + 'token/',
                 {
                     username: fields.username,
                     password: fields.password,
                 }).then((response) => {
-                commit('LOGIN', response.data.token);
-                axios.defaults.headers.common = {
-                    "Authorization": 'Token ' + response.data.token
-                };
-                axios.get(BASE_URL + "users/me/").then((response) => {
-                    commit('SETID', response.data.id);
-                    resolve();
+                    commit('LOGIN', response.data.token);
+                    axios.defaults.headers.common = {
+                        "Authorization": 'Token ' + response.data.token
+                    };
+                    axios.get(BASE_URL + "users/me/").then((response) => {
+                        commit('SETID', response.data.id);
+                        resolve();
+                    }, (error) => {
+                        reject(error);
+                    })
                 }, (error) => {
                     reject(error);
-                })
+                });
             }, (error) => {
                 reject(error);
             });
+            
         });
     },
     getProfile({commit}, id) {
@@ -173,7 +173,73 @@ const actions = {
         } catch (error) {
             console.log(error)
         }
-    }
+    },
+    // eslint-disable-next-line no-unused-vars
+    addLike({commit}, messageId) {
+        return new Promise((resolve, reject) => {
+                axios.post(BASE_URL + "likes/", {message_id: messageId}).then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    removeLike({commit}, messageId) {
+        //FIXME add route to delete like from message ID
+        /*
+        return new Promise((resolve, reject) => {
+                axios.delete(BASE_URL + "likes/" + messageId + "/").then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+                */
+    },
+    // eslint-disable-next-line no-unused-vars
+    getFollow({commit}, userId) {
+        return new Promise((resolve, reject) => {
+                axios.get(BASE_URL + "users/" + userId + "/follows/").then((response) => {
+                    resolve(response.data.results);
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    getFollower({commit}, userId) {
+        return new Promise((resolve, reject) => {
+                axios.get(BASE_URL + "users/" + userId + "/followers/").then((response) => {
+                    resolve(response.data.results);
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    follow({commit}, following_id) {
+        return new Promise((resolve, reject) => {
+                axios.post(BASE_URL + "follows/", {following_id: following_id}).then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    unfollow({commit}, followed) {
+        //FIXME add route to delete follow from followed user id
+        /*
+        return new Promise((resolve, reject) => {
+                axios.delete(BASE_URL + "follows/" + followed + "/").then(() => {
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                })
+        });
+                */
+    },
 }
 
 //to handle mutations
@@ -213,8 +279,11 @@ const mutations = {
     },
     MESSAGES(state, messages){
         state.messages = messages;
+    },
+    SETID(state, id) {
+        state.userId = id;
+        localStorage.setItem("userId", id);
     }
-
 }
 
 //export store module
