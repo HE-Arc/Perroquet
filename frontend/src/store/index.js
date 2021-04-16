@@ -13,58 +13,58 @@ const state = {
     profiles: [],
     filter: "new",
     userId: 0,
+    messages: []
 }
 
 //to handle state
 const getters = {
     authenticated: state => {
-        return state.token != ""
-    }
+        return state.token !== ""
+    },
+    // messages: state => {
+    //     return state.messages
+    // }
 }
 
 //to handle actions
 const actions = {
-    login({ commit }, fields) {
+    login({commit}, fields) {
         return new Promise((resolve, reject) => {
             axios.post(BASE_URL + 'token/',
                 {
                     username: fields.username,
                     password: fields.password,
                 }).then((response) => {
-                    axios.defaults.headers.common = {
-                        "Authorization": 'Token ' + response.data.token
-                    };
-                    commit('LOGIN', response.data.token);
-                    axios.get(BASE_URL + "users/me/").then((response) => {
-                        commit('SETID', response.data.id);
-                        resolve();
-                    }, (error) => {
-                        reject(error);
-                    })
-                }, (error) => {
-                    reject(error);
-                });
-        });
-    },
-    logout({ commit }) {
-        commit('LOGOUT');
-    },
-    register({ commit }, fields) {
-        return new Promise((resolve, reject) => {
-            axios.post(BASE_URL + 'register/',
-                {
-                    username: fields.username,
-                    password: fields.password,
-                    password2: fields.password,
-                    email: fields.email,
-                    first_name: fields.firstname,
-                    last_name: fields.lastname
-                }).then(() => {
+                axios.defaults.headers.common = {
+                    "Authorization": 'Token ' + response.data.token
+                };
+                commit('LOGIN', response.data.token);
+                axios.get(BASE_URL + "users/me/").then((response) => {
+                    commit('SETID', response.data.id);
                     resolve();
                 }, (error) => {
                     reject(error);
-                });
-            axios.post(BASE_URL + 'token/',
+                })
+            }, (error) => {
+                reject(error);
+            });
+        });
+    },
+    logout({commit}) {
+        commit('LOGOUT');
+    },
+    register({commit}, fields) {
+        return new Promise((resolve, reject) => {
+            axios.post(BASE_URL + 'register/',
+            {
+                username: fields.username,
+                password: fields.password,
+                password2: fields.password,
+                email: fields.email,
+                first_name: fields.firstname,
+                last_name: fields.lastname
+            }).then(() => {
+                axios.post(BASE_URL + 'token/',
                 {
                     username: fields.username,
                     password: fields.password,
@@ -82,14 +82,18 @@ const actions = {
                 }, (error) => {
                     reject(error);
                 });
+            }, (error) => {
+                reject(error);
+            });
+            
         });
     },
-    getProfile({ commit }, id) {
+    getProfile({commit}, id) {
         return new Promise((resolve, reject) => {
             if (state.profiles[id] !== undefined) {
                 resolve(state.profiles[id]);
             } else {
-                axios.get(BASE_URL + "users/"+id+"/").then((response) => {
+                axios.get(BASE_URL + "users/" + id + "/").then((response) => {
                     commit('ADDPROFILE', response.data);
                     resolve(state.profiles[id]);
                 }, (error) => {
@@ -98,13 +102,13 @@ const actions = {
             }
         });
     },
-    saveProfile({ commit }, profile) {
+    saveProfile({commit}, profile) {
         return new Promise((resolve, reject) => {
-            axios.put(BASE_URL + "users/"+profile.id+"/", profile.data, {
-                headers: {
-                  "Content-Type": "multipart/form-data"
+            axios.put(BASE_URL + "users/" + profile.id + "/", profile.data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
                 }
-            }
             ).then((response) => {
                 commit('ADDPROFILE', response.data);
                 resolve();
@@ -114,13 +118,13 @@ const actions = {
         });
     },
     // eslint-disable-next-line no-unused-vars
-    addMessage({ commit }, message) {
+    addMessage({commit}, message) {
         return new Promise((resolve, reject) => {
             axios.post(BASE_URL + "messages/", message, {
-                headers: {
-                  "Content-Type": "multipart/form-data"
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
                 }
-            }
             ).then(() => {
                 resolve();
             }, (error) => {
@@ -128,11 +132,11 @@ const actions = {
             })
         });
     },
-    getProfileMessages({ commit }, id) {
+    getProfileMessages({commit}, id) {
         return new Promise((resolve, reject) => {
             //FIXME add filter
-            axios.get(BASE_URL + "users/"+id+"/messages/").then((response) => {
-                commit('ADDMESSAGESTOPROFILE', {m : response.data, id: id});
+            axios.get(BASE_URL + "users/" + id + "/messages/").then((response) => {
+                commit('ADDMESSAGESTOPROFILE', {m: response.data, id: id});
                 resolve(state.profiles[id].messages);
             }, (error) => {
                 reject(error);
@@ -141,26 +145,34 @@ const actions = {
     },
     passwordResetLink({commit}, fields) {
         return new Promise((resolve, reject) => {
-                axios.post(BASE_URL + "password_reset/", {email: fields.email}).then(() => {
-                    commit('LOGOUT');
-                    resolve();
-                }, (error) => {
-                    reject(error);
-                })
+            axios.post(BASE_URL + "password_reset/", {email: fields.email}).then(() => {
+                commit('LOGOUT');
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
         });
     },
     passwordReset({commit}, fields) {
         return new Promise((resolve, reject) => {
-                axios.post(BASE_URL + "password_reset/confirm/", fields).then(() => {
-                    commit('LOGOUT');
-                    resolve();
-                }, (error) => {
-                    reject(error);
-                })
+            axios.post(BASE_URL + "password_reset/confirm/", fields).then(() => {
+                commit('LOGOUT');
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
         });
     },
-    filter({ commit }, filter) {
+    filter({commit}, filter) {
         commit('FILTER', filter);
+    },
+    async requestDiscover({commit}) {
+        try {
+            const response = await axios.get(BASE_URL + "messages/discover/?filter=" + state.filter)
+            commit('MESSAGES', response.data.results)
+        } catch (error) {
+            console.log(error)
+        }
     },
     // eslint-disable-next-line no-unused-vars
     addLike({commit}, messageId) {
@@ -242,13 +254,13 @@ const mutations = {
         axios.defaults.headers.common = {
             "Authorization": ""
         };
-        localStorage.setItem("userID", 0);
-        state.userId=0;
+        localStorage.setItem("userId", 0);
+        state.userId = 0;
     },
     initialiseStore(state) {
         if (localStorage.getItem('token') != null) {
             state.token = localStorage.getItem('token');
-            if(state.token!=""){
+            if (state.token != "") {
                 axios.defaults.headers.common = {
                     "Authorization": 'Token ' + state.token
                 };
@@ -264,6 +276,9 @@ const mutations = {
     },
     FILTER(state, filter) {
         state.filter = filter;
+    },
+    MESSAGES(state, messages){
+        state.messages = messages;
     },
     SETID(state, id) {
         state.userId = id;
