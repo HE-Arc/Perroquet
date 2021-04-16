@@ -1,5 +1,11 @@
 <template>
-  <v-navigation-drawer app>
+  <div>
+      <v-app-bar dense app>
+   <v-app-bar-nav-icon @click="drawer = !drawer" ></v-app-bar-nav-icon>
+      <v-app-bar-title>Perroquet</v-app-bar-title>
+    </v-app-bar>
+
+  <v-navigation-drawer  v-model="drawer" app>
     <v-layout column fill-height>
       <v-card-title>
         <v-img :src="require('../assets/perroquet_logo/svg/Logo_DarkMagenta.svg')" height="64" width="64"
@@ -45,6 +51,7 @@
 
 
   </v-navigation-drawer>
+    </div>
 </template>
 
 <script>
@@ -52,6 +59,7 @@ export default {
   name: "Navigationbar",
 
   data: () => ({
+    drawer : true,
     pp: ""
   }),
 
