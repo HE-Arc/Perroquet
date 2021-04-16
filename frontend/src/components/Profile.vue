@@ -47,7 +47,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <filters></filters>
+        <filters v-on:input="reload()"></filters>
       </v-col>
     </v-row>
     <v-row>

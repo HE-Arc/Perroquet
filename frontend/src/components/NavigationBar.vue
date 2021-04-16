@@ -65,7 +65,7 @@ export default {
         navItems = [
           {icon: 'mdi-home', title: 'Home', link: '/home'},
           {icon: 'mdi-compass', title: 'Discover', link: '/discover'},
-          {icon: 'mdi-account-heart', title: 'Friends', link: '/follow'},
+          {icon: 'mdi-account-heart', title: 'Friends', link: '/friends'},
           {icon: 'mdi-cog', title: 'Settings', link: '/settings'},
           {icon: 'mdi-logout', title: 'Disconnect', link: '/logout'},
         ]

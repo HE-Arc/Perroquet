@@ -26,6 +26,11 @@ export default new Router({
       component: () => import("./components/Home.vue")
     },
     {
+      path: "/friends",
+      name: "Friends",
+      component: () => import("./components/Friends.vue")
+    },
+    {
       path: "/signin",
       name: "Signin",
       component: () => import("./components/Signin.vue")

@@ -200,6 +200,14 @@ const actions = {
             console.log(error)
         }
     },
+    async requestFriends({commit}) {
+        try {
+            const response = await axios.get(BASE_URL + "messages/friends/?filter=" + state.filter)
+            commit('MESSAGES', response.data.results)
+        } catch (error) {
+            console.log(error)
+        }
+    },
     // eslint-disable-next-line no-unused-vars
     addLike({commit}, messageId) {
         return new Promise((resolve, reject) => {
