@@ -1,6 +1,7 @@
-# Create your views here.
+from datetime import datetime, timedelta, date
+
 from django.db import models
-from django.db.models import Count
+from django.db.models import Count, Case, When, IntegerField, Sum, Q
 from rest_framework import viewsets, mixins, generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -13,6 +14,31 @@ from .serializers import MessageSerializer, PublicUserProfileSerializer, \
     FollowSerializer, LikeSerializer
 
 
+LIKE_PONDERATION = Case(
+                        When(like__date__gt=datetime.today() - timedelta(hours=1), then=50),
+                        When(like__date__gt=datetime.today() - timedelta(hours=12), then=25),
+                        When(like__date__gt=datetime.today() - timedelta(days=1), then=10),
+                        When(like__date__gt=datetime.today() - timedelta(days=2), then=5),
+                        When(like__date__gt=datetime.today() - timedelta(days=5), then=2),
+                        default=1,
+                        output_field=IntegerField()
+                    )
+
+def sortMessages(obj, sortBy):
+    if sortBy == "/hot":
+        # Tri selon le nombre de like. Un like récent a une pondération + élevée
+        return obj.annotate(
+            count=Sum(LIKE_PONDERATION)
+        ).order_by('count').reverse()
+
+    elif sortBy == "/top":
+        # Tri selon le nombre de like
+        return obj.annotate(count=Count('like')).order_by('count').reverse()
+
+    else:
+        # Tri du messages
+        return obj.order_by('date').reverse().all()
+
 class IsOwner(permissions.BasePermission):
     message = "Not an owner"
 
@@ -21,15 +47,11 @@ class IsOwner(permissions.BasePermission):
             return True
         return request.user == obj.user
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 25
+    page_size_query_param = 'page_size'
+    max_page_size = 25
 
-class HelloView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request):
-        content = {
-            'message': 'Hello, World!'
-            }
-        return Response(content)
 
 class UserViewSet(mixins.RetrieveModelMixin,
                   mixins.ListModelMixin,
@@ -45,9 +67,9 @@ class UserViewSet(mixins.RetrieveModelMixin,
         serializer = PublicUserProfileSerializer(request.user,context={'request': request}, many=False)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'], url_name="messages")
-    def messages(self, request,pk):
-        user_msg = Message.objects.order_by('date').filter(user__id=pk).reverse().all()
+    @action(detail=True, methods=['get'], url_name="messages", url_path='messages(?P<sortBy>/[a-z]*)?')
+    def messages(self, request,pk, sortBy=None):
+        user_msg = sortMessages(Message.objects.filter(user__id=pk), sortBy)
 
         page = self.paginate_queryset(user_msg)
         if page is not None:
@@ -84,12 +106,6 @@ class UserViewSet(mixins.RetrieveModelMixin,
         return Response(serializer.data)
 
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 4
-    page_size_query_param = 'page_size'
-    max_page_size = 10
-
-
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
@@ -100,17 +116,11 @@ class MessageViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-#Pas besoin en fait
-    # def create(self, request, *args, **kwargs):
-    #     serializer = CreateMessageSerializer(data=request.data, context={'request': request})
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save(user = request.user)
-    #     return Response(serializer.data)
-
-    @action(detail=False, methods=['get'], url_name="home",permission_classes=[permissions.IsAuthenticated])
-    def home(self, request):
+    @action(detail=False, methods=['get'], url_name="home",permission_classes=[permissions.IsAuthenticated],
+            url_path='home(?P<sortBy>/[a-z]*)?')
+    def home(self, request,sortBy=None):
         follows = Follow.objects.filter(user__id=request.user.id).values_list("following",flat=True)
-        home_msg = Message.objects.order_by('date').reverse().filter(user__in=follows)
+        home_msg = sortMessages(Message.objects.filter(user__in=follows), sortBy)
 
         page = self.paginate_queryset(home_msg)
         if page is not None:
@@ -120,9 +130,9 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(home_msg, many=True)
         return Response(serializer.data)
 
-    @action(detail=False,methods=['get'],url_name="discover")
-    def discover(self, request):
-        discover_msg = Message.objects.order_by('date').reverse().all()
+    @action(detail=False,methods=['get'], url_name="discover",url_path='discover(?P<sortBy>/[a-z]*)?')
+    def discover(self, request, sortBy=None):
+        discover_msg = sortMessages(Message.objects, sortBy)
 
         page = self.paginate_queryset(discover_msg)
         if page is not None:
@@ -132,20 +142,21 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(discover_msg, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], url_name="friends", permission_classes=[permissions.IsAuthenticated])
-    def friends(self, request):
+    @action(detail=False, methods=['get'], url_name="friends", permission_classes=[permissions.IsAuthenticated],
+            url_path='friends(?P<sortBy>/[a-z]*)?')
+    def friends(self, request, sortBy=None):
         follows = Follow.objects.filter(user__id=request.user.id).values_list("following", flat=True)
         followers = Follow.objects.filter(following_id=request.user.id).values_list("user", flat=True)
         friends = [value for value in follows if value in followers]
-        print(friends)
-        home_msg = Message.objects.order_by('date').reverse().filter(user__in=friends)
 
-        page = self.paginate_queryset(home_msg)
+        friend_msg = sortMessages(Message.objects.filter(user__in=friends), sortBy)
+
+        page = self.paginate_queryset(friend_msg)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(home_msg, many=True)
+        serializer = self.get_serializer(friend_msg, many=True)
         return Response(serializer.data)
 
 class FollowViewSet(viewsets.ModelViewSet):

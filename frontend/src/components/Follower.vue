@@ -1,12 +1,20 @@
 <template>
-    <v-row class="text-center">
-      <v-col v-if="profilsAvailable" cols="12">
-        <mini-profile v-for="profile in profiles" :key="profile.user.id" :user="profile.user"></mini-profile>
+<div>
+  <div v-if="profilsAvailable">
+    <v-row v-for="profile in profiles" :key="profile.user.id" class="text-center">
+      <v-col cols="12">
+        <mini-profile :user="profile.user"></mini-profile>
       </v-col>
-      <v-col v-if="!profilsAvailable" cols="12">
+    </v-row>
+  </div>
+  <div v-if="!profilsAvailable">
+    <v-row>
+      <v-col cols="12">
         Nothing to show yet.
       </v-col>
     </v-row>
+  </div>
+</div>
 </template>
 
 <script>
