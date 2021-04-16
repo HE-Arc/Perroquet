@@ -66,7 +66,7 @@ export default new Router({
     {
       path: "/logout",
       redirect: function() { 
-        store.dispatch("logout");
+        //store.dispatch("logout");
         return "/";
       },
     },

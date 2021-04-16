@@ -29,7 +29,9 @@
       <v-spacer></v-spacer>
       <v-list>
         <v-list-item link router :to="userLogin.link">
-          <v-avatar v-if="userIsAuthenticated"></v-avatar>
+          <v-avatar v-if="userIsAuthenticated" >
+            <v-img :src="pp" contain></v-img>
+          </v-avatar>
           <v-list-item-icon v-else>
             <v-icon >mdi-login</v-icon>
           </v-list-item-icon>
@@ -50,6 +52,7 @@ export default {
   name: "Navigationbar",
 
   data: () => ({
+    pp: ""
   }),
 
   computed: {
@@ -61,8 +64,9 @@ export default {
         navItems = [
           {icon: 'mdi-home', title: 'Home', link: '/home'},
           {icon: 'mdi-compass', title: 'Discover', link: '/discover'},
-          {icon: 'mdi-account-heart', title: 'Friends', link: '/friends'},
+          {icon: 'mdi-account-heart', title: 'Friends', link: '/follow'},
           {icon: 'mdi-cog', title: 'Settings', link: '/settings'},
+          {icon: 'mdi-logout', title: 'Disconnect', link: '/logout'},
         ]
       }
       return navItems
@@ -70,11 +74,15 @@ export default {
     userIsAuthenticated () {
       return this.$store.getters.authenticated
     },
-
     userLogin(){
       return this.userIsAuthenticated ? {title: "Username", link:"/profile"} : {title: "Login", link:"/login"}
     }
 
+  },mounted() {
+      var vm = this
+      this.$store.dispatch("getProfile", this.$store.state.userId).then((p) => {
+        vm.pp = p.profile.image
+      })
   }
 }
 </script>
