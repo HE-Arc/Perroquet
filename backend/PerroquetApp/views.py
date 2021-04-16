@@ -1,16 +1,29 @@
-from django.shortcuts import render, get_object_or_404
-
 # Create your views here.
-from .models import User, Message
-from .serializers import MessageSerializer, PublicUserProfileSerializer
-
-from rest_framework import generics, permissions, viewsets
-from rest_framework.views import APIView
+from django.db import models
+from django.db.models import Count
+from rest_framework import viewsets, mixins, generics, permissions, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter
+
+from .models import User, Message, Follow, Like
+from .serializers import MessageSerializer, PublicUserProfileSerializer, \
+    FollowSerializer, LikeSerializer
+
+
+class IsOwner(permissions.BasePermission):
+    message = "Not an owner"
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user == obj.user
+
 
 class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
         content = {
@@ -18,68 +31,144 @@ class HelloView(APIView):
             }
         return Response(content)
 
+class UserViewSet(mixins.RetrieveModelMixin,
+                  mixins.ListModelMixin,
+                  mixins.UpdateModelMixin,
+                  mixins.DestroyModelMixin,
+                  viewsets.GenericViewSet):
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all()
     serializer_class = PublicUserProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-# Utile pour retourner seulement certaines info si ce n\'est pas le proprio du profil
-    # def get_serializer_context(self):
-    #     if (user_owner):
-    #         fields = {'blah', 'blah', 'blah'}
-    #     else:
-    #         fields = {'foo', 'bar'}
-    #     return {'fields': fields, 'request': self.request}
+    @action(detail=False, methods=['get'], url_name="me",permission_classes=[permissions.IsAuthenticated])
+    def me(self, request):
+        serializer = PublicUserProfileSerializer(request.user,context={'request': request}, many=False)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_name="messages")
+    def messages(self, request,pk):
+
+        user_msg = Message.objects.order_by('date').filter(user__id=pk).reverse().all()
+
+        page = self.paginate_queryset(user_msg)
+        if page is not None:
+            serializer = MessageSerializer(page, many=True,context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = MessageSerializer(user_msg, many=True,context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_name="followers")
+    def followers(self, request, pk):
+
+        followers = Follow.objects.filter(following__id=pk).all()
+
+        page = self.paginate_queryset(followers)
+        if page is not None:
+            serializer = FollowSerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = FollowSerializer(followers, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_name="follows")
+    def follows(self, request, pk):
+
+        follows = Follow.objects.filter(user__id=pk).all()
+
+        page = self.paginate_queryset(follows)
+        if page is not None:
+            serializer = FollowSerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = FollowSerializer(follows, many=True, context={'request': request})
+        return Response(serializer.data)
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 4
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwner]
+    http_method_names = ['get', 'post', 'delete']
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
+#Pas besoin en fait
+    # def create(self, request, *args, **kwargs):
+    #     serializer = CreateMessageSerializer(data=request.data, context={'request': request})
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save(user = request.user)
+    #     return Response(serializer.data)
 
-class UserViewSet(viewsets.ViewSet):
-    """
-    Example empty viewset demonstrating the standard
-    actions that will be handled by a router class.
+    @action(detail=False, methods=['get'], url_name="home",permission_classes=[permissions.IsAuthenticated])
+    def home(self, request):
+        follows = Follow.objects.filter(user__id=request.user.id).values_list("following",flat=True)
+        home_msg = Message.objects.order_by('date').reverse().filter(user__in=follows)
 
-    If you're using format suffixes, make sure to also include
-    the `format=None` keyword argument for each action.
-    """
+        page = self.paginate_queryset(home_msg)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
-    def list(self, request):
-        pass
+        serializer = self.get_serializer(home_msg, many=True)
+        return Response(serializer.data)
 
-    def create(self, request):
-        pass
+    @action(detail=False,methods=['get'],url_name="discover")
+    def discover(self, request):
+        discover_msg = Message.objects.order_by('date').reverse().all()
 
-    def retrieve(self, request, pk=None):
-        pass
+        page = self.paginate_queryset(discover_msg)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
-    def update(self, request, pk=None):
-        pass
+        serializer = self.get_serializer(discover_msg, many=True)
+        return Response(serializer.data)
 
-    def partial_update(self, request, pk=None):
-        pass
+class FollowViewSet(viewsets.ModelViewSet):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwner]
+    http_method_names = ['get','post','delete']
 
-    def destroy(self, request, pk=None):
-        pass
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
-# class MessageList(generics.ListCreateAPIView):
-#     queryset = Message.objects.all()
-#     serializer_class = MessageSerializer
-#     permission_classes = [permissions.IsAuthenticated]
-#
-# class UserList(generics.ListCreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = PublicUserProfileSerializer
-#     permission_classes = [permissions.IsAuthenticated]
+    @action(detail=False, methods=['delete'],url_path='(?P<pk>\d+)')
+    def unfollow(self, request, pk):
+        follow = Follow.objects.filter(user__id=request.user.id,following_id=pk).first()
 
-#
-# class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Subscription.objects.all()
-#     serializer_class = SubscriptionSerializer
+        if follow is not None:
+            follow.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwner]
+    http_method_names = ['get','post','delete']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    @action(detail=False, methods=['delete'], url_path='(?P<pk>\d+)')
+    def unlike(self, request, pk):
+        like = Like.objects.filter(user__id=request.user.id, message_id=pk).first()
+
+        if like is not None:
+            like.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_404_NOT_FOUND)

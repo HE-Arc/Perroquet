@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -8,26 +10,33 @@ from django.dispatch import receiver
 
 class Message(models.Model):
     """Table schema to store articles."""
-    author = models.ForeignKey(User, on_delete=models.CASCADE,related_name="author")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="message")
     content = models.TextField()
-    replyTo = models.ForeignKey("PerroquetApp.Message", null=True,on_delete=models.SET_NULL, related_name="replyToMessage")
+    replyTo = models.ForeignKey("PerroquetApp.Message", blank=True,null=True,on_delete=models.SET_NULL, related_name="replyToMessage")
+    image = models.ImageField(upload_to ='img/%Y/%m/%d/',blank=True,null=True)
+    date = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return '%s' % self.content
 
 class Like(models.Model):
     """Table schema to store articles."""
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.ForeignKey("PerroquetApp.Message", on_delete=models.CASCADE, related_name="message")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, )
+    message = models.ForeignKey("PerroquetApp.Message", on_delete=models.CASCADE, related_name="like")
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (("user","message"),)
 
     def __str__(self):
-        return "like"
+        return User.objects.get(pk=self.user_id).username +" like "+ str(Message.objects.get(pk=self.message_id).id)
 
 class Profile(models.Model):
     """Table schema to store profile."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField()
-    image = models.CharField(max_length=255)
+    bio = models.TextField(blank=True)
+    image = models.ImageField(upload_to ='img/%Y/%m/%d/',blank=True,null=True)
     location = models.CharField(max_length=30, blank=True)
     birthDate = models.DateField(null=True, blank=True)
 
@@ -42,9 +51,12 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Follow(models.Model):
     """Table schema to store follow."""
-    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
-    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
-    date_follow = models.DateTimeField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follow")
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers")
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (("user","following"),)
 
     def __str__(self):
-        return '%s' % self.name
+        return User.objects.get(pk=self.user_id).username +" follow "+User.objects.get(pk=self.following_id).username
