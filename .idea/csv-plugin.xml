@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\frontend\src\components\Home.vue">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\frontend\src\store\index.js">
           <value>
             <Attribute>

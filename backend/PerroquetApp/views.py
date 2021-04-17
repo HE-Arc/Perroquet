@@ -29,11 +29,11 @@ def sortMessages(obj, sortBy):
         # Tri selon le nombre de like. Un like récent a une pondération + élevée
         return obj.annotate(
             count=Sum(LIKE_PONDERATION)
-        ).order_by('count').reverse()
+        ).order_by('count','date').reverse()
 
     elif sortBy == "/top":
         # Tri selon le nombre de like
-        return obj.annotate(count=Count('like')).order_by('count').reverse()
+        return obj.annotate(count=Count('like')).order_by('count','date').reverse()
 
     else:
         # Tri du messages
@@ -48,10 +48,14 @@ class IsOwner(permissions.BasePermission):
         return request.user == obj.user
 
 class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 25
+    page_size = 5
     page_size_query_param = 'page_size'
     max_page_size = 25
 
+class FollowResultsSetPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class UserViewSet(mixins.RetrieveModelMixin,
                   mixins.ListModelMixin,
@@ -71,10 +75,11 @@ class UserViewSet(mixins.RetrieveModelMixin,
     def messages(self, request,pk, sortBy=None):
         user_msg = sortMessages(Message.objects.filter(user__id=pk), sortBy)
 
-        page = self.paginate_queryset(user_msg)
+        pagination = StandardResultsSetPagination()
+        page = pagination.paginate_queryset(user_msg,request)
         if page is not None:
             serializer = MessageSerializer(page, many=True,context={'request': request})
-            return self.get_paginated_response(serializer.data)
+            return pagination.get_paginated_response(serializer.data)
 
         serializer = MessageSerializer(user_msg, many=True,context={'request': request})
         return Response(serializer.data)
@@ -84,10 +89,11 @@ class UserViewSet(mixins.RetrieveModelMixin,
 
         followers = Follow.objects.filter(following__id=pk).all()
 
-        page = self.paginate_queryset(followers)
+        pagination = FollowResultsSetPagination()
+        page = pagination.paginate_queryset(followers, request)
         if page is not None:
             serializer = FollowSerializer(page, many=True, context={'request': request})
-            return self.get_paginated_response(serializer.data)
+            return pagination.get_paginated_response(serializer.data)
 
         serializer = FollowSerializer(followers, many=True, context={'request': request})
         return Response(serializer.data)
@@ -97,10 +103,11 @@ class UserViewSet(mixins.RetrieveModelMixin,
 
         follows = Follow.objects.filter(user__id=pk).all()
 
-        page = self.paginate_queryset(follows)
+        pagination = FollowResultsSetPagination()
+        page = pagination.paginate_queryset(follows, request)
         if page is not None:
             serializer = FollowSerializer(page, many=True, context={'request': request})
-            return self.get_paginated_response(serializer.data)
+            return pagination.get_paginated_response(serializer.data)
 
         serializer = FollowSerializer(follows, many=True, context={'request': request})
         return Response(serializer.data)
