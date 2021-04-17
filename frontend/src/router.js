@@ -23,12 +23,20 @@ export default new Router({
     {
       path: "/home",
       name: "Home",
-      component: () => import("./components/Home.vue")
+      component: () => import("./components/Home.vue"),
+      beforeEnter: (to, from, next) => {
+        if(!store.getters.authenticated) next({name: 'Login'})
+        else next()
+      }
     },
     {
       path: "/friends",
       name: "Friends",
-      component: () => import("./components/Friends.vue")
+      component: () => import("./components/Friends.vue"),
+      beforeEnter: (to, from, next) => {
+        if(!store.getters.authenticated) next({name: 'Login'})
+        else next()
+      }
     },
     {
       path: "/message/:mId",
@@ -63,6 +71,10 @@ export default new Router({
     {
       path: "/profile",
       redirect: function() { return "/profile/" + store.state.userId},
+      beforeEnter: (to, from, next) => {
+        if(!store.getters.authenticated) next({name: 'Login'})
+        else next()
+      }
     },
     {
       path: "/follow/:pId",
@@ -72,6 +84,10 @@ export default new Router({
     {
       path: "/follow",
       redirect: function() { return "/follow/" + store.state.userId},
+      beforeEnter: (to, from, next) => {
+        if(!store.getters.authenticated) next({name: 'Login'})
+        else next()
+      }
     },
     {
       path: "/follower/:pId",
@@ -81,16 +97,28 @@ export default new Router({
     {
       path: "/follower",
       redirect: function() { return "/follower/" + store.state.userId},
+      beforeEnter: (to, from, next) => {
+        if(!store.getters.authenticated) next({name: 'Login'})
+        else next()
+      }
     },
     {
       path: "/logout",
       name: "Logout",
-      component: () => import("./components/Logout.vue")
+      component: () => import("./components/Logout.vue"),
+      beforeEnter: (to, from, next) => {
+        if(!store.getters.authenticated) next({name: 'Login'})
+        else next()
+      }
     },
     {
       path: "/settings",
       name: "Settings",
-      component: () => import("./components/Settings.vue")
+      component: () => import("./components/Settings.vue"),
+      beforeEnter: (to, from, next) => {
+        if(!store.getters.authenticated) next({name: 'Login'})
+        else next()
+      }
     },
 
 

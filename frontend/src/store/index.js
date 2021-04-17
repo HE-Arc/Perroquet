@@ -38,9 +38,6 @@ const getters = {
     authenticated: state => {
         return state.token !== ""
     },
-    // messages: state => {
-    //     return state.messages
-    // }
 }
 
 //to handle actions
@@ -369,7 +366,6 @@ const mutations = {
         console.log(state.messages)
     },
     MESSAGES(state, messages) {
-        console.log(messages);
         state.messages = messages;
         // state.messages = state.messages.concat(messages);
         // console.log(state.messages)

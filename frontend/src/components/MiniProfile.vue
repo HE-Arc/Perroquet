@@ -16,20 +16,16 @@
 export default {
   name: "MiniProfile",
   props: {
-    user:Object,
+    user: Object,
   },
-  data: () => ({
-
-  }),
-  computed: {
-  },
-  methods: {
-  }
+  data: () => ({}),
+  computed: {},
+  methods: {}
 }
 </script>
 
 <style scoped>
-.profileLink{
+.profileLink {
   text-decoration: none;
   color: inherit;
 }
