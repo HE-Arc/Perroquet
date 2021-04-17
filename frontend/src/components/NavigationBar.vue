@@ -35,7 +35,7 @@
           </v-list-item>
         </v-list>
         <v-spacer></v-spacer>
-        <v-list>
+        <v-list class="mb-12">
           <v-list-item link router :to="userLogin.link">
             <v-avatar v-if="userIsAuthenticated">
               <v-img :src="pp" contain></v-img>
@@ -43,7 +43,7 @@
             <v-list-item-icon v-else>
               <v-icon>mdi-login</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
+            <v-list-item-content class="pl-4">
               {{ userLogin.title }}
             </v-list-item-content>
           </v-list-item>
