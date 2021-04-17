@@ -29,7 +29,7 @@
           <v-img :src="message.user.profile.image"></v-img>
         </v-avatar>
         <span class="pa-4">{{ message.user.username }}</span></router-link>
-
+        <span class="pa-0 subtitle-2 font-weight-light">{{ new Date(message.date).toLocaleString()  }}</span>
 
       <v-spacer></v-spacer>
       <v-btn plain v-on:click="like()">
