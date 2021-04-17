@@ -24,16 +24,20 @@
             </v-form>
 
             <v-card-actions>
-              <router-link to="/signin"><v-btn>Sign in</v-btn></router-link> 
-              <router-link to="/passwordResetLink"><v-btn>Forgot your password?</v-btn></router-link>
-              <v-spacer></v-spacer>
-              <v-btn
-                type="submit"
-                @click="submit"
-                color="primary"
-                :disabled="!valid"
-                >Login</v-btn
-              >
+              <v-row>
+                <v-col>
+                  <v-btn
+                    type="submit"
+                    @click="submit"
+                    color="primary"
+                    :disabled="!valid"
+                    >Login</v-btn
+                  >
+                  <v-spacer></v-spacer>
+                  <router-link to="/signin"><v-btn>Sign in</v-btn></router-link> 
+                  <router-link to="/passwordResetLink"><v-btn>Forgot your password?</v-btn></router-link>
+                </v-col>
+              </v-row>
             </v-card-actions>
           </v-card-text>
         </v-card>
