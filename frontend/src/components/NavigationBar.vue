@@ -1,52 +1,59 @@
 <template>
-  <v-navigation-drawer app>
-    <v-layout column fill-height>
-      <v-card-title>
+  <div>
+    <v-app-bar dense app>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-title>Perroquet</v-app-bar-title>
+    </v-app-bar>
+
+    <v-navigation-drawer v-model="drawer" app>
+      <v-layout column fill-height>
         <router-link :to="'/'" class="profileLink">
-          <v-img :src="require('../assets/perroquet_logo/svg/Logo_DarkMagenta.svg')" height="64" width="64"
-                contain></v-img>
-          <span class="pa-4">Perroquet</span>
+          <v-card-title>
+            <v-img :src="require('../assets/perroquet_logo/svg/Logo_DarkMagenta.svg')" height="64" width="64"
+                   contain></v-img>
+            <span class="pa-4">Perroquet</span>
+          </v-card-title>
         </router-link>
-      </v-card-title>
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-      <v-list>
-        <v-list-item
-            v-for="item in navItems"
-            :key="item.title"
-            link
-            router
-            :to="item.link"
-        >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
+        <v-list>
+          <v-list-item
+              v-for="item in navItems"
+              :key="item.title"
+              link
+              router
+              :to="item.link"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
 
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-      <v-spacer></v-spacer>
-      <v-list>
-        <v-list-item link router :to="userLogin.link">
-          <v-avatar v-if="userIsAuthenticated" >
-            <v-img :src="pp" contain></v-img>
-          </v-avatar>
-          <v-list-item-icon v-else>
-            <v-icon >mdi-login</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            {{ userLogin.title }}
-          </v-list-item-content>
-        </v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-spacer></v-spacer>
+        <v-list>
+          <v-list-item link router :to="userLogin.link">
+            <v-avatar v-if="userIsAuthenticated">
+              <v-img :src="pp" contain></v-img>
+            </v-avatar>
+            <v-list-item-icon v-else>
+              <v-icon>mdi-login</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              {{ userLogin.title }}
+            </v-list-item-content>
+          </v-list-item>
 
-      </v-list>
-    </v-layout>
+        </v-list>
+      </v-layout>
 
 
-  </v-navigation-drawer>
+    </v-navigation-drawer>
+  </div>
 </template>
 
 <script>
@@ -54,12 +61,13 @@ export default {
   name: "Navigationbar",
 
   data: () => ({
+    drawer: true,
     pp: "",
     username: ""
   }),
 
   computed: {
-    navItems () {
+    navItems() {
       let navItems = [
         {icon: 'mdi-compass', title: 'Discover', link: '/discover'},
       ]
@@ -74,15 +82,15 @@ export default {
       }
       return navItems
     },
-    userIsAuthenticated () {
+    userIsAuthenticated() {
       return this.$store.getters.authenticated
     },
-    userLogin(){
-      return this.userIsAuthenticated ? {title: this.username, link:"/profile"} : {title: "Login", link:"/login"}
+    userLogin() {
+      return this.userIsAuthenticated ? {title: this.username, link: "/profile"} : {title: "Login", link: "/login"}
     }
 
-  },mounted() {
-    if(this.$store.getters.authenticated){
+  }, mounted() {
+    if (this.$store.getters.authenticated) {
       var vm = this
       this.$store.dispatch("getProfile", this.$store.state.userId).then((p) => {
         vm.pp = p.profile.image
@@ -94,7 +102,7 @@ export default {
 </script>
 
 <style scoped>
-.profileLink{
+.profileLink {
   text-decoration: none;
   color: inherit;
 }
