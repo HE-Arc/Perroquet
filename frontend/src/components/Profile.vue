@@ -5,7 +5,7 @@
         <v-card outlined elevation="10">
           <v-card-title>
             <v-avatar>
-              <v-img :src="profile.profile.image" contain></v-img>
+              <v-img :src="profile.profile.image"></v-img>
             </v-avatar>
             <v-file-input 
               v-if="edit"

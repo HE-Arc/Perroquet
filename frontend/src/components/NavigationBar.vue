@@ -38,7 +38,7 @@
         <v-list>
           <v-list-item link router :to="userLogin.link">
             <v-avatar v-if="userIsAuthenticated">
-              <v-img :src="pp" contain></v-img>
+              <v-img :src="pp"></v-img>
             </v-avatar>
             <v-list-item-icon v-else>
               <v-icon>mdi-login</v-icon>

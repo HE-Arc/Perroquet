@@ -13,7 +13,23 @@ const state = {
     profiles: [],
     filter: "new",
     userId: 0,
-    messages: []
+    messages: [],
+    message: {
+    "id":0,
+    "reply_count": 0,
+    "like_count": 0,
+    "liked": false,
+    "content": "",
+    "image": null,
+    "user": {
+        "id": 0,
+        "username": "",
+        "profile": {
+            "image": null
+        },
+    },
+    "replyTo": null,
+}
 }
 
 //to handle state
@@ -145,6 +161,16 @@ const actions = {
                 reject(error);
             })
         });
+    },
+    async getMessageComments({commit}, id) {
+        try {
+            const response = await axios.get(BASE_URL + "messages/" + id + "/comments/" + state.filter + "/")
+            commit('MESSAGES', response.data.results)
+            const message = await axios.get(BASE_URL + "messages/" + id + "/")
+            commit('MESSAGEDETAIL', message.data)
+        } catch (error) {
+            console.log(error)
+        }
     },
     getProfileMessages({commit}, id) {
         return new Promise((resolve, reject) => {
@@ -307,6 +333,9 @@ const mutations = {
     },
     MESSAGES(state, messages){
         state.messages = messages;
+    },
+    MESSAGEDETAIL(state, message){
+        state.message = message;
     },
     SETID(state, id) {
         state.userId = id;

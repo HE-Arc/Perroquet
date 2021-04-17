@@ -1,8 +1,12 @@
 <template>
   <v-card outlined elevation="10">
-    <v-card-title>
+    <v-card-title v-if="reply">
+        Reply something:
+    </v-card-title>
+    <v-card-title v-else>
         Say something:
     </v-card-title>
+
     <v-card-text v-if="add && this.$store.getters.authenticated">
         <v-alert v-if="error" color="red" type="warning">Error</v-alert>
         <v-form v-model="valid">
@@ -44,6 +48,7 @@ export default {
       valid: false,
       error: false,
       add: false,
+      reply: null,
       fields:{
           text: "",
           img: ""
@@ -65,6 +70,9 @@ export default {
         if(vm.fields.img!=""){
         formdata.append('image', vm.fields.img)
         }
+        if(this.reply){
+          formdata.append('replyTo', this.reply)
+        }
         this.$store.dispatch("addMessage", formdata).then(
         () => {
           vm.$emit("new")
@@ -77,7 +85,11 @@ export default {
     selectFile(f) {
       this.fields.img=f
     }
-  }
+  },
+  beforeMount() {
+    this.reply = this.$route.params.mId
+
+  },
 }
 </script>
 

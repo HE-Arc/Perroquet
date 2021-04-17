@@ -31,6 +31,11 @@ export default new Router({
       component: () => import("./components/Friends.vue")
     },
     {
+      path: "/message/:mId",
+      name: "Message",
+      component: () => import("./components/MessageDetail.vue")
+    },
+    {
       path: "/signin",
       name: "Signin",
       component: () => import("./components/Signin.vue")
