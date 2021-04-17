@@ -35,7 +35,7 @@
           </v-list-item>
         </v-list>
         <v-spacer></v-spacer>
-        <v-list>
+        <v-list class="mb-8">
           <v-list-item link router :to="userLogin.link">
             <v-avatar v-if="userIsAuthenticated">
               <v-img :src="pp" contain></v-img>
