@@ -101,13 +101,13 @@ export default {
       })
     }
   }, watch: {
-    userId (id) {
-      if(id!=0){
+    userId(id) {
+      if (id != 0) {
         var vm = this
         this.$store.dispatch("getProfile", this.$store.state.userId).then((p) => {
-        vm.pp = p.profile.image
-        vm.username = p.username
-      })
+          vm.pp = p.profile.image
+          vm.username = p.username
+        })
       }
     }
   }

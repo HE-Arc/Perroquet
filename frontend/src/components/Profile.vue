@@ -7,16 +7,17 @@
             <v-avatar>
               <v-img :src="profile.profile.image" contain></v-img>
             </v-avatar>
-            <v-file-input 
-              v-if="edit"
-              accept="image/png, image/jpeg, image/bmp"
-              placeholder="New Profile Picture"
-              prepend-icon="mdi-camera"
-              label="New Profile Picture"
-              @change="selectFile"
+            <v-file-input
+                v-if="edit"
+                accept="image/png, image/jpeg, image/bmp"
+                placeholder="New Profile Picture"
+                prepend-icon="mdi-camera"
+                label="New Profile Picture"
+                @change="selectFile"
             ></v-file-input>
-            <span v-if="!edit" class="pa-4">{{profile.username}}</span>
-            <v-text-field v-if="edit" label="Username" v-model="profile.username" :rules="usernameRules" outlined></v-text-field>
+            <span v-if="!edit" class="pa-4">{{ profile.username }}</span>
+            <v-text-field v-if="edit" label="Username" v-model="profile.username" :rules="usernameRules"
+                          outlined></v-text-field>
             <v-spacer></v-spacer>
             <v-btn v-if="ownProfile && !edit" @click="edit=true">Edit</v-btn>
             <v-btn v-if="ownProfile && edit" @click="saveProfile()">Save</v-btn>
@@ -26,16 +27,17 @@
           <v-card-text>
             <v-spacer></v-spacer>
             <router-link :to="'/follower/' + profile.id" class="profileLink">
-            {{profile.followers_count}} Followers 
+              {{ profile.followers_count }} Followers
             </router-link>
             <router-link :to="'/follow/' + profile.id" class="profileLink">
-            {{profile.follow_count}} Follow
-            </router-link><br><br>
+              {{ profile.follow_count }} Follow
+            </router-link>
+            <br><br>
             <p v-if="!edit" class="text-justify">{{ profile.profile.bio }}</p>
             <v-textarea label="bio" v-model="profile.profile.bio" v-if="edit" outlined></v-textarea>
           </v-card-text>
           <v-card-actions>
-              
+
           </v-card-actions>
         </v-card>
       </v-col>
@@ -51,11 +53,11 @@
       </v-col>
     </v-row>
     <div v-if="messagesAvailable">
-    <v-row v-for="message in messages" :key="message.id">
-      <v-col >
-        <message :message="message"/>
-      </v-col>
-    </v-row>
+      <v-row v-for="message in messages" :key="message.id">
+        <v-col>
+          <message :message="message"/>
+        </v-col>
+      </v-row>
     </div>
     <v-row v-if="!messagesAvailable">
       <v-col>
@@ -69,8 +71,9 @@
 import Filters from "@/components/Filters";
 import Message from "@/components/Message";
 import NewMessage from '@/components/NewMessage.vue';
+
 export default {
-  components: { Filters, Message, NewMessage },
+  components: {Filters, Message, NewMessage},
   name: "Profile",
 
   data: () => ({
@@ -98,19 +101,19 @@ export default {
     ],
   }),
   computed: {
-    ownProfile: function() {
-      return this.$store.state.userId==this.profile.id
+    ownProfile: function () {
+      return this.$store.state.userId == this.profile.id
     },
-    messagesAvailable: function() {
-    // eslint-disable-next-line no-unused-vars
-      for (var k in this.messages){
+    messagesAvailable: function () {
+      // eslint-disable-next-line no-unused-vars
+      for (var k in this.messages) {
         return true
       }
       return false;
     }
   },
   methods: {
-    saveProfile: function() {
+    saveProfile: function () {
       var vm = this;
 
       var formdata = new FormData();
@@ -118,76 +121,76 @@ export default {
       formdata.append('username', vm.profile.username)
       formdata.append('profile.bio', vm.profile.profile.bio)
 
-      if(vm.file!=""){
+      if (vm.file != "") {
         formdata.append('profile.image', vm.file)
       }
 
-      this.$store.dispatch("saveProfile", {data:formdata, id: vm.profile.id}).then(
-        () => {
-          vm.edit=false;
-          this.$store.dispatch("getProfile", this.$route.params.pId).then(
-            (p) => {
-              vm.profile = p;
-            }
-          );
-        }
+      this.$store.dispatch("saveProfile", {data: formdata, id: vm.profile.id}).then(
+          () => {
+            vm.edit = false;
+            this.$store.dispatch("getProfile", this.$route.params.pId).then(
+                (p) => {
+                  vm.profile = p;
+                }
+            );
+          }
       );
     },
     reload() {
       var vm = this;
       this.$store.dispatch("getProfileMessages", this.$route.params.pId).then(
-        (m) => {
-          vm.messages = m;
-        }
+          (m) => {
+            vm.messages = m;
+          }
       )
     },
     selectFile(f) {
-      this.file=f
+      this.file = f
     },
-    follow(){
+    follow() {
       var vm = this;
       this.$store.dispatch("follow", this.$route.params.pId).then(
-        () => {
-          vm.profile.followed = true;
-          vm.profile.followers_count++
-        }
+          () => {
+            vm.profile.followed = true;
+            vm.profile.followers_count++
+          }
       )
     },
-    unfollow(){
+    unfollow() {
       var vm = this;
       this.$store.dispatch("unfollow", this.$route.params.pId).then(
-        () => {
-          vm.profile.followed = false;
-          vm.profile.followers_count--
-        }
+          () => {
+            vm.profile.followed = false;
+            vm.profile.followers_count--
+          }
       )
     }
   },
   mounted() {
     var vm = this;
     this.$store.dispatch("getProfile", this.$route.params.pId).then(
-      (p) => {
-        vm.profile = p;
-      }
-    );
-    this.$store.dispatch("getProfileMessages", this.$route.params.pId).then(
-      (m) => {
-        vm.messages = m;
-      }
-    )
-  },
-  watch: {
-    '$route.params.pId': function(id) {
-      var vm = this;
-      this.$store.dispatch("getProfile", id).then(
         (p) => {
           vm.profile = p;
         }
-      );
-      this.$store.dispatch("getProfileMessages", id).then(
+    );
+    this.$store.dispatch("getProfileMessages", this.$route.params.pId).then(
         (m) => {
           vm.messages = m;
         }
+    )
+  },
+  watch: {
+    '$route.params.pId': function (id) {
+      var vm = this;
+      this.$store.dispatch("getProfile", id).then(
+          (p) => {
+            vm.profile = p;
+          }
+      );
+      this.$store.dispatch("getProfileMessages", id).then(
+          (m) => {
+            vm.messages = m;
+          }
       )
     }
   }
