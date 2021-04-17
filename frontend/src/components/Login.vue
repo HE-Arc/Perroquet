@@ -35,7 +35,7 @@
                   >
                   <v-spacer></v-spacer>
                   <router-link to="/signin"><v-btn>Sign in</v-btn></router-link> 
-                  <router-link to="/passwordResetLink"><v-btn>Forgot your password?</v-btn></router-link>
+                  <!--<router-link to="/passwordResetLink"><v-btn>Forgot your password?</v-btn></router-link>-->
                 </v-col>
               </v-row>
             </v-card-actions>
@@ -69,7 +69,6 @@ export default {
       this.$store
         .dispatch("login", this.fields)
         .then(() => {
-          //TODO correct redirect
           this.$router.push("/index");
         })
         .catch(() => {
