@@ -17,7 +17,7 @@
     </v-row>
     <v-row v-for="message in this.$store.state.messages" :key="message.id">
       <v-col>
-        <new-message v-on:new="requestMessages()"></new-message>
+        <message :message="message"></message>
       </v-col>
     </v-row>
   </v-container>
