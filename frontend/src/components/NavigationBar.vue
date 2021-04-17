@@ -87,6 +87,9 @@ export default {
     },
     userLogin() {
       return this.userIsAuthenticated ? {title: this.username, link: "/profile"} : {title: "Login", link: "/login"}
+    },
+    userId() {
+      return this.$store.state.userId
     }
 
   }, mounted() {
@@ -96,6 +99,16 @@ export default {
         vm.pp = p.profile.image
         vm.username = p.username
       })
+    }
+  }, watch: {
+    userId (id) {
+      if(id!=0){
+        var vm = this
+        this.$store.dispatch("getProfile", this.$store.state.userId).then((p) => {
+        vm.pp = p.profile.image
+        vm.username = p.username
+      })
+      }
     }
   }
 }

@@ -9,11 +9,11 @@ export default new Router({
   routes: [
     {
       path: "/",
-      redirect: '/home'
+      redirect: '/discover'
     },
     {
       path: "/index",
-      redirect: '/home'
+      redirect: '/discover'
     },
     {
       path: "/discover",
