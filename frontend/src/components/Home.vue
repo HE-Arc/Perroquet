@@ -1,17 +1,14 @@
 <template>
-<div>
+<v-container>
   <v-row><v-col>
     <new-message v-on:new="requestMessages()"></new-message>
   </v-col></v-row>
-  <div v-if="!messagesAvailable">
-    <v-row>
+    <v-row v-if="!messagesAvailable">
       <v-col>
         No message to show you yet.
       </v-col>
     </v-row>
-  </div>
-  <div v-if="messagesAvailable">
-    <v-row><v-col>
+    <v-row v-if="messagesAvailable"><v-col>
       <filters v-on:input="requestMessages()"></filters>
     </v-col></v-row>
     <v-row v-for="message in this.$store.state.messages" :key="message.id">
@@ -19,8 +16,7 @@
         <message :message="message"></message>
       </v-col>
     </v-row>
-  </div>
-</div>
+</v-container>
 
 </template>
 
