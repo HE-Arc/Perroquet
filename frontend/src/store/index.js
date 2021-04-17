@@ -13,7 +13,23 @@ const state = {
     profiles: [],
     filter: "new",
     userId: 0,
-    messages: []
+    messages: [],
+    message: {
+    "id":0,
+    "reply_count": 0,
+    "like_count": 0,
+    "liked": false,
+    "content": "",
+    "image": null,
+    "user": {
+        "id": 0,
+        "username": "",
+        "profile": {
+            "image": null
+        },
+    },
+    "replyTo": null,
+}
 }
 
 //to handle state
@@ -21,9 +37,6 @@ const getters = {
     authenticated: state => {
         return state.token !== ""
     },
-    // messages: state => {
-    //     return state.messages
-    // }
 }
 
 //to handle actions
@@ -56,19 +69,19 @@ const actions = {
     register({commit}, fields) {
         return new Promise((resolve, reject) => {
             axios.post(BASE_URL + 'register/',
-            {
-                username: fields.username,
-                password: fields.password,
-                password2: fields.password,
-                email: fields.email,
-                first_name: fields.firstname,
-                last_name: fields.lastname
-            }).then(() => {
-                axios.post(BASE_URL + 'token/',
                 {
                     username: fields.username,
                     password: fields.password,
-                }).then((response) => {
+                    password2: fields.password,
+                    email: fields.email,
+                    first_name: fields.firstname,
+                    last_name: fields.lastname
+                }).then(() => {
+                axios.post(BASE_URL + 'token/',
+                    {
+                        username: fields.username,
+                        password: fields.password,
+                    }).then((response) => {
                     commit('LOGIN', response.data.token);
                     axios.defaults.headers.common = {
                         "Authorization": 'Token ' + response.data.token
@@ -85,7 +98,7 @@ const actions = {
             }, (error) => {
                 reject(error);
             });
-            
+
         });
     },
     getProfile({commit}, id) {
@@ -146,11 +159,21 @@ const actions = {
             })
         });
     },
+    async getMessageComments({commit}, id) {
+        try {
+            const response = await axios.get(BASE_URL + "messages/" + id + "/comments/" + state.filter + "/")
+            commit('MESSAGES', response.data.results)
+            const message = await axios.get(BASE_URL + "messages/" + id + "/")
+            commit('MESSAGEDETAIL', message.data)
+        } catch (error) {
+            console.log(error)
+        }
+    },
     getProfileMessages({commit}, id) {
         return new Promise((resolve, reject) => {
-            axios.get(BASE_URL + "users/" + id + "/messages/?filter=" + state.filter).then((response) => {
+            axios.get(BASE_URL + "users/" + id + "/messages/" + state.filter + "/").then((response) => {
                 // eslint-disable-next-line no-unused-vars
-                for (var m in response.data.results){
+                for (var m in response.data.results) {
                     commit('ADDMESSAGESTOPROFILE', {m: response.data, id: id});
                     resolve(state.profiles[id].messages);
                     break;
@@ -186,7 +209,7 @@ const actions = {
     },
     async requestDiscover({commit}) {
         try {
-            const response = await axios.get(BASE_URL + "messages/discover/?filter=" + state.filter)
+            const response = await axios.get(BASE_URL + "messages/discover/" + state.filter + "/")
             commit('MESSAGES', response.data.results)
         } catch (error) {
             console.log(error)
@@ -194,7 +217,7 @@ const actions = {
     },
     async requestHome({commit}) {
         try {
-            const response = await axios.get(BASE_URL + "messages/home/?filter=" + state.filter)
+            const response = await axios.get(BASE_URL + "messages/home/" + state.filter + "/")
             commit('MESSAGES', response.data.results)
         } catch (error) {
             console.log(error)
@@ -202,7 +225,7 @@ const actions = {
     },
     async requestFriends({commit}) {
         try {
-            const response = await axios.get(BASE_URL + "messages/friends/?filter=" + state.filter)
+            const response = await axios.get(BASE_URL + "messages/friends/" + state.filter + "/")
             commit('MESSAGES', response.data.results)
         } catch (error) {
             console.log(error)
@@ -211,61 +234,61 @@ const actions = {
     // eslint-disable-next-line no-unused-vars
     addLike({commit}, messageId) {
         return new Promise((resolve, reject) => {
-                axios.post(BASE_URL + "likes/", {message_id: messageId}).then(() => {
-                    resolve();
-                }, (error) => {
-                    reject(error);
-                })
+            axios.post(BASE_URL + "likes/", {message_id: messageId}).then(() => {
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
         });
     },
     // eslint-disable-next-line no-unused-vars
     removeLike({commit}, messageId) {
         return new Promise((resolve, reject) => {
-                axios.delete(BASE_URL + "likes/" + messageId + "/").then(() => {
-                    resolve();
-                }, (error) => {
-                    reject(error);
-                })
+            axios.delete(BASE_URL + "likes/" + messageId + "/").then(() => {
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
         });
     },
     // eslint-disable-next-line no-unused-vars
     getFollow({commit}, userId) {
         return new Promise((resolve, reject) => {
-                axios.get(BASE_URL + "users/" + userId + "/follows/").then((response) => {
-                    resolve(response.data.results);
-                }, (error) => {
-                    reject(error);
-                })
+            axios.get(BASE_URL + "users/" + userId + "/follows/").then((response) => {
+                resolve(response.data.results);
+            }, (error) => {
+                reject(error);
+            })
         });
     },
     // eslint-disable-next-line no-unused-vars
     getFollower({commit}, userId) {
         return new Promise((resolve, reject) => {
-                axios.get(BASE_URL + "users/" + userId + "/followers/").then((response) => {
-                    resolve(response.data.results);
-                }, (error) => {
-                    reject(error);
-                })
+            axios.get(BASE_URL + "users/" + userId + "/followers/").then((response) => {
+                resolve(response.data.results);
+            }, (error) => {
+                reject(error);
+            })
         });
     },
     // eslint-disable-next-line no-unused-vars
     follow({commit}, following_id) {
         return new Promise((resolve, reject) => {
-                axios.post(BASE_URL + "follows/", {following_id: following_id}).then(() => {
-                    resolve();
-                }, (error) => {
-                    reject(error);
-                })
+            axios.post(BASE_URL + "follows/", {following_id: following_id}).then(() => {
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
         });
     },
     // eslint-disable-next-line no-unused-vars
     unfollow({commit}, followed) {
         return new Promise((resolve, reject) => {
-                axios.delete(BASE_URL + "follows/" + followed + "/").then(() => {
-                    resolve();
-                }, (error) => {
-                    reject(error);
-                })
+            axios.delete(BASE_URL + "follows/" + followed + "/").then(() => {
+                resolve();
+            }, (error) => {
+                reject(error);
+            })
         });
     },
 }
@@ -305,8 +328,11 @@ const mutations = {
     FILTER(state, filter) {
         state.filter = filter;
     },
-    MESSAGES(state, messages){
+    MESSAGES(state, messages) {
         state.messages = messages;
+    },
+    MESSAGEDETAIL(state, message){
+        state.message = message;
     },
     SETID(state, id) {
         state.userId = id;

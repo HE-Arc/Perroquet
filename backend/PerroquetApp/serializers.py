@@ -94,9 +94,10 @@ class UserSerializer(serializers.ModelSerializer):
 #         model = Message
 #         fields = ['id','content','user','replyTo']
 
-class MessageSerializer(serializers.HyperlinkedModelSerializer):
+class MessageSerializer(serializers.ModelSerializer):
     user = PublicUserProfileSerializer(read_only=True)
     like_count = serializers.SerializerMethodField(read_only=True)
+    reply_count = serializers.SerializerMethodField(read_only=True)
     liked = serializers.SerializerMethodField(read_only=True)
 
     def get_liked(self,msg):
@@ -111,9 +112,12 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
     def get_like_count(self,msg):
         return msg.like.count()
 
+    def get_reply_count(self,msg):
+        return msg.replyToMessage.count()
+
     class Meta:
         model = Message
-        fields = ['id','date','like_count','liked','content','image','user','replyTo','url',]
+        fields = ['id','date','reply_count','like_count','liked','content','image','user','replyTo','url',]
 
 
 class FollowSerializer(serializers.ModelSerializer):

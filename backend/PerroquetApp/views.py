@@ -116,6 +116,20 @@ class MessageViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @action(detail=True, methods=['get'], url_name="comments",
+            url_path='comments(?P<sortBy>/[a-z]*)?')
+    def comments(self, request,pk,sortBy=None):
+        print(pk)
+        comments_msg = sortMessages(Message.objects.filter(replyTo__id=pk), sortBy)
+
+        page = self.paginate_queryset(comments_msg)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(comments_msg, many=True)
+        return Response(serializer.data)
+
     @action(detail=False, methods=['get'], url_name="home",permission_classes=[permissions.IsAuthenticated],
             url_path='home(?P<sortBy>/[a-z]*)?')
     def home(self, request,sortBy=None):

@@ -3,12 +3,12 @@
     <v-card-title>
       <router-link :to="'/profile/'+user.id" class="profileLink">
         <v-avatar>
-          <v-img :src="user.profile.image" contain></v-img>
+          <v-img :src="user.profile.image"></v-img>
         </v-avatar>
         <span class="pa-4">{{ user.username }}</span>
       </router-link>
     </v-card-title>
-    <v-card-text>{{ user.profile.bio }}</v-card-text>
+    <v-card-text align="left">{{ user.profile.bio }}</v-card-text>
   </v-card>
 </template>
 
@@ -16,20 +16,16 @@
 export default {
   name: "MiniProfile",
   props: {
-    user:Object,
+    user: Object,
   },
-  data: () => ({
-
-  }),
-  computed: {
-  },
-  methods: {
-  }
+  data: () => ({}),
+  computed: {},
+  methods: {}
 }
 </script>
 
 <style scoped>
-.profileLink{
+.profileLink {
   text-decoration: none;
   color: inherit;
 }
