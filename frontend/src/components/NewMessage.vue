@@ -3,7 +3,7 @@
     <v-card-title>
         Say something:
     </v-card-title>
-    <v-card-text v-if="add">
+    <v-card-text v-if="add && this.$store.getters.authenticated">
         <v-alert v-if="error" color="red" type="warning">Error</v-alert>
         <v-form v-model="valid">
             <v-textarea
@@ -23,11 +23,14 @@
             ></v-file-input>
         </v-form>
         </v-card-text>
-        <v-card-actions v-if="add">
+        <v-card-text v-if="!this.$store.getters.authenticated">
+          <router-link :to="'/login'">Login</router-link> or <router-link :to="'/signin'">signin</router-link> to add a message.
+        </v-card-text>
+        <v-card-actions v-if="add && this.$store.getters.authenticated">
             <v-spacer></v-spacer>
         <v-btn class="mr-4" @click="submit" :disabled="!valid"> Save </v-btn>
         </v-card-actions>
-        <v-card-actions v-if="!add">
+        <v-card-actions v-if="!add && this.$store.getters.authenticated">
             <v-spacer></v-spacer>
         <v-btn class="mr-4" @click="add=true"> Create a new post </v-btn>
         </v-card-actions>

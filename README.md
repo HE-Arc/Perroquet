@@ -16,8 +16,9 @@ Création d’un mini réseau social permettant la publication de posts publics 
 * Page profil utilisateur personnalisable (image de profil, pseudonyme, changement de mot de passe)
 * Possibilité de s’abonner à d’autres utilisateurs
 * Affichage des personnes suivies par un profil
-* Possibilité de commenter des posts (connexion obligatoire)
+
 
 ## Spécifications avancées :
+* Possibilité de commenter des posts (connexion obligatoire)
 * Connexion OAuth avec un compte Google 
 * Affichage du contenu des URL publiés dans des posts (Exemple : Embed Youtube Player, link preview)
