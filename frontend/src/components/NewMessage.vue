@@ -19,7 +19,7 @@
             hint="Write your text here"
         ></v-textarea>
         <v-file-input
-            accept="image/png, image/jpeg, image/bmp"
+            accept="image/png, image/jpeg, image/bmp, image/gif"
             placeholder="Add an image"
             prepend-icon="mdi-image"
             label="Add an image"

@@ -9,7 +9,7 @@
             </v-avatar>
             <v-file-input
                 v-if="edit"
-                accept="image/png, image/jpeg, image/bmp"
+                accept="image/png, image/jpeg, image/bmp, image/gif"
                 placeholder="New Profile Picture"
                 prepend-icon="mdi-camera"
                 label="New Profile Picture"
