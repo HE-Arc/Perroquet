@@ -31,6 +31,7 @@
         </v-layout>
       </v-col>
     </v-row>
+    <trigger @triggerIntersected="requestMessages(true)" />
   </v-container>
 </template>
 
@@ -38,6 +39,7 @@
 import Message from "@/components/Message";
 import Filters from "@/components/Filters";
 import NewMessage from '@/components/NewMessage.vue';
+import Trigger from '@/components/Trigger.vue';
 
 export default {
   name: "Friends",
@@ -45,7 +47,7 @@ export default {
     scrolledToBottom: false,
     loading: false
   }),
-  components: {Filters, Message, NewMessage},
+  components: {Filters, Message, NewMessage, Trigger},
   computed: {
     messagesAvailable: function () {
       // eslint-disable-next-line no-unused-vars
@@ -59,22 +61,11 @@ export default {
     this.requestMessages()
 
   },
-  mounted() {
-    this.scroll()
-  },
   methods: {
     requestMessages(next=false) {
       this.loading = true
       var vm = this
       this.$store.dispatch("requestFriends", next).then(() =>{vm.loading = false});
-    },
-    scroll() {
-      window.onscroll = () => {
-        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
-        if (bottomOfWindow) {
-          this.requestMessages(true);
-        }
-      };
     },
   },
 

@@ -31,6 +31,7 @@
         </v-layout>
       </v-col>
     </v-row>
+    <trigger @triggerIntersected="requestMessages(true)" />
   </v-container>
 </template>
 
@@ -38,6 +39,7 @@
 import Message from "@/components/Message";
 import Filters from "@/components/Filters";
 import NewMessage from '@/components/NewMessage.vue';
+import Trigger from '@/components/Trigger.vue';
 
 export default {
   name: "Discover",
@@ -45,7 +47,7 @@ export default {
     scrolledToBottom: false,
     loading: false,
   }),
-  components: {Filters, Message, NewMessage},
+  components: {Filters, Message, NewMessage, Trigger},
   computed: {
     messagesAvailable: function () {
       // eslint-disable-next-line no-unused-vars
@@ -54,9 +56,6 @@ export default {
       }
       return false;
     }
-  },
-  mounted() {
-    this.scroll()
   },
   beforeMount() {
     this.requestMessages()
@@ -67,14 +66,6 @@ export default {
       this.loading = true
       var vm = this
       this.$store.dispatch("requestDiscover", next).then(() =>{vm.loading = false});
-    },
-    scroll() {
-      window.onscroll = () => {
-        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
-        if (bottomOfWindow) {
-          this.requestMessages(true);
-        }
-      };
     },
   },
 
