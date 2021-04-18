@@ -20,6 +20,17 @@
         <message :message="message"></message>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <v-layout justify-center>
+        <v-progress-circular
+          v-if="loading"
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+        </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -31,7 +42,8 @@ import NewMessage from '@/components/NewMessage.vue';
 export default {
   name: "Friends",
   data: () => ({
-    scrolledToBottom: false
+    scrolledToBottom: false,
+    loading: false
   }),
   components: {Filters, Message, NewMessage},
   computed: {
@@ -52,7 +64,9 @@ export default {
   },
   methods: {
     requestMessages(next=false) {
-      this.$store.dispatch("requestFriends", next);
+      this.loading = true
+      var vm = this
+      this.$store.dispatch("requestFriends", next).then(() =>{vm.loading = false});
     },
     scroll() {
       window.onscroll = () => {
