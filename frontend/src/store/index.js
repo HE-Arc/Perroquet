@@ -363,7 +363,6 @@ const mutations = {
         state.filter = filter;
         state.nextMessages = null;
         state.messages=[];
-        console.log(state.messages)
     },
     MESSAGES(state, messages) {
         state.messages = messages;
@@ -374,7 +373,6 @@ const mutations = {
         state.message = message;
     },
     NEXTMESSAGES(state, nextUrl) {
-        console.log(nextUrl);
         if (nextUrl == null)
         {
             state.nextMessages=null;
@@ -386,7 +384,6 @@ const mutations = {
 
     },
     LOADNEXTMESSAGES(state, messages) {
-        console.log(messages);
         state.messages = state.messages.concat(messages);
     },
     SETID(state, id) {
