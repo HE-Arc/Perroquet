@@ -74,7 +74,7 @@ const actions = {
                 {
                     username: fields.username,
                     password: fields.password,
-                    password2: fields.password,
+                    password2: fields.password2,
                     email: fields.email,
                     first_name: fields.firstname,
                     last_name: fields.lastname
