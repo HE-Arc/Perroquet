@@ -15,21 +15,22 @@ const state = {
     userId: 0,
     messages: [],
     message: {
-    "id":0,
-    "reply_count": 0,
-    "like_count": 0,
-    "liked": false,
-    "content": "",
-    "image": null,
-    "user": {
         "id": 0,
-        "username": "",
-        "profile": {
-            "image": null
+        "reply_count": 0,
+        "like_count": 0,
+        "liked": false,
+        "content": "",
+        "image": null,
+        "user": {
+            "id": 0,
+            "username": "",
+            "profile": {
+                "image": null
+            },
         },
+        "replyTo": null,
     },
-    "replyTo": null,
-}
+    nextMessages: null,
 }
 
 //to handle state
@@ -159,12 +160,20 @@ const actions = {
             })
         });
     },
-    async getMessageComments({commit}, id) {
+    async getMessageComments({commit}, id,next) {
         try {
-            const response = await axios.get(BASE_URL + "messages/" + id + "/comments/" + state.filter + "/")
+            if (next && this.state.nextMessages) {
+                const response = await axios.get(this.state.nextMessages)
+                commit('NEXTMESSAGES', response.data.next)
+                commit('LOADNEXTMESSAGES', response.data.results)
+            }
+            else if (!next) {
+                const response = await axios.get(BASE_URL + "messages/" + id + "/comments/" + state.filter + "/")
+            commit('NEXTMESSAGES', response.data.next)
             commit('MESSAGES', response.data.results)
             const message = await axios.get(BASE_URL + "messages/" + id + "/")
             commit('MESSAGEDETAIL', message.data)
+            }
         } catch (error) {
             console.log(error)
         }
@@ -207,26 +216,51 @@ const actions = {
     filter({commit}, filter) {
         commit('FILTER', filter);
     },
-    async requestDiscover({commit}) {
+    async requestDiscover({commit},next) {
         try {
-            const response = await axios.get(BASE_URL + "messages/discover/" + state.filter + "/")
-            commit('MESSAGES', response.data.results)
+            if (next && this.state.nextMessages) {
+                const response = await axios.get(this.state.nextMessages)
+                commit('NEXTMESSAGES', response.data.next)
+                commit('LOADNEXTMESSAGES', response.data.results)
+            }
+            else if (!next) {
+                const response = await axios.get(BASE_URL + "messages/discover/" + state.filter + "/")
+                commit('NEXTMESSAGES', response.data.next)
+                commit('MESSAGES', response.data.results)
+            }
+
         } catch (error) {
             console.log(error)
         }
     },
-    async requestHome({commit}) {
+    async requestHome({commit},next) {
         try {
-            const response = await axios.get(BASE_URL + "messages/home/" + state.filter + "/")
-            commit('MESSAGES', response.data.results)
+            if (next && this.state.nextMessages) {
+                const response = await axios.get(this.state.nextMessages)
+                commit('NEXTMESSAGES', response.data.next)
+                commit('LOADNEXTMESSAGES', response.data.results)
+            }
+            else if (!next) {
+                const response = await axios.get(BASE_URL + "messages/home/" + state.filter + "/")
+                commit('NEXTMESSAGES', response.data.next)
+                commit('MESSAGES', response.data.results)
+            }
         } catch (error) {
             console.log(error)
         }
     },
-    async requestFriends({commit}) {
+    async requestFriends({commit},next) {
         try {
-            const response = await axios.get(BASE_URL + "messages/friends/" + state.filter + "/")
-            commit('MESSAGES', response.data.results)
+            if (next && this.state.nextMessages) {
+                const response = await axios.get(this.state.nextMessages)
+                commit('NEXTMESSAGES', response.data.next)
+                commit('LOADNEXTMESSAGES', response.data.results)
+            }
+            else if (!next) {
+                const response = await axios.get(BASE_URL + "messages/friends/" + state.filter + "/")
+                commit('NEXTMESSAGES', response.data.next)
+                commit('MESSAGES', response.data.results)
+            }
         } catch (error) {
             console.log(error)
         }
@@ -327,12 +361,33 @@ const mutations = {
     },
     FILTER(state, filter) {
         state.filter = filter;
+        state.nextMessages = null;
+        state.messages=[];
+        console.log(state.messages)
     },
     MESSAGES(state, messages) {
         state.messages = messages;
+        // state.messages = state.messages.concat(messages);
+        // console.log(state.messages)
     },
-    MESSAGEDETAIL(state, message){
+    MESSAGEDETAIL(state, message) {
         state.message = message;
+    },
+    NEXTMESSAGES(state, nextUrl) {
+        console.log(nextUrl);
+        if (nextUrl == null)
+        {
+            state.nextMessages=null;
+        }
+        else
+        {
+            state.nextMessages = nextUrl;
+        }
+
+    },
+    LOADNEXTMESSAGES(state, messages) {
+        console.log(messages);
+        state.messages = state.messages.concat(messages);
     },
     SETID(state, id) {
         state.userId = id;

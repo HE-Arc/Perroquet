@@ -30,6 +30,9 @@ import NewMessage from '@/components/NewMessage.vue';
 
 export default {
   name: "Friends",
+  data: () => ({
+    scrolledToBottom: false
+  }),
   components: {Filters, Message, NewMessage},
   computed: {
     messagesAvailable: function () {
@@ -44,10 +47,22 @@ export default {
     this.requestMessages()
 
   },
+  mounted() {
+    this.scroll()
+  },
   methods: {
-    requestMessages() {
-      this.$store.dispatch("requestFriends", "test");
-    }
+    requestMessages(next=false) {
+      this.$store.dispatch("requestFriends", next);
+    },
+    scroll() {
+      window.onscroll = () => {
+        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+        if (bottomOfWindow) {
+          this.requestMessages(true);
+          console.log("bottom reached. loading next messages");
+        }
+      };
+    },
   },
 
 

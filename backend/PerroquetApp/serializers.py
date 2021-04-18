@@ -84,21 +84,18 @@ class UserSerializer(serializers.ModelSerializer):
     # def create(self, validated_data):
     #     return User.objects.create_user(**validated_data)
 
-
-#Inutile avec le perform_create dans la view
-# class CreateMessageSerializer(serializers.ModelSerializer):
-#     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-#     user = serializers.PrimaryKeyRelatedField(read_only=True)
-#
-#     class Meta:
-#         model = Message
-#         fields = ['id','content','user','replyTo']
+class ReplyInfoSerializer(serializers.ModelSerializer):
+    user = PublicUserProfileSerializer(read_only=True)
+    class Meta:
+        model = Message
+        fields = ['date','content','image','user','url',]
 
 class MessageSerializer(serializers.ModelSerializer):
     user = PublicUserProfileSerializer(read_only=True)
     like_count = serializers.SerializerMethodField(read_only=True)
     reply_count = serializers.SerializerMethodField(read_only=True)
     liked = serializers.SerializerMethodField(read_only=True)
+    reply_info = ReplyInfoSerializer(source='replyTo',read_only=True)
 
     def get_liked(self,msg):
         request = self.context.get("request")
@@ -117,7 +114,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['id','date','reply_count','like_count','liked','content','image','user','replyTo','url',]
+        fields = ['id','date','reply_count','like_count','liked','content','image','user','replyTo','reply_info','url',]
 
 
 class FollowSerializer(serializers.ModelSerializer):

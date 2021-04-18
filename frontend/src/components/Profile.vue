@@ -9,7 +9,7 @@
             </v-avatar>
             <v-file-input
                 v-if="edit"
-                accept="image/png, image/jpeg, image/bmp"
+                accept="image/png, image/jpeg, image/bmp, image/gif"
                 placeholder="New Profile Picture"
                 prepend-icon="mdi-camera"
                 label="New Profile Picture"
@@ -24,9 +24,9 @@
             <v-btn v-if="!ownProfile && !profile.followed" @click="follow">Follow</v-btn>
             <v-btn v-if="!ownProfile && profile.followed" @click="unfollow">Unfollow</v-btn>
           </v-card-title>
-          <v-card-text>
+          <v-card-text align="left">
             <v-spacer></v-spacer>
-            <router-link :to="'/follower/' + profile.id" class="profileLink">
+            <router-link :to="'/follower/' + profile.id" class="profileLink mr-5">
               {{ profile.followers_count }} Followers
             </router-link>
             <router-link :to="'/follow/' + profile.id" class="profileLink">

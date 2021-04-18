@@ -30,6 +30,9 @@ import NewMessage from '@/components/NewMessage.vue';
 
 export default {
   name: "Home",
+  data: () => ({
+    scrolledToBottom: false
+  }),
   components: {Filters, Message, NewMessage},
   computed: {
     messagesAvailable: function () {
@@ -38,20 +41,31 @@ export default {
         return true
       }
       return false;
-    }
+    },
+  },
+  mounted() {
+    this.scroll()
   },
   beforeMount() {
     this.requestMessages()
 
   },
   methods: {
-    requestMessages() {
-      this.$store.dispatch("requestHome", "test");
-    }
+    requestMessages(next = false) {
+      this.$store.dispatch("requestHome", next);
+    },
+    scroll() {
+      window.onscroll = () => {
+        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+        if (bottomOfWindow) {
+          this.requestMessages(true);
+          console.log("bottom reached. loading next messages");
+        }
+      };
+    },
   },
-
-
 }
+
 </script>
 
 <style scoped>

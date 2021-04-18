@@ -35,6 +35,9 @@ import Filters from "@/components/Filters";
 import NewMessage from '@/components/NewMessage.vue';
 export default {
   name: "MessageDetail",
+  data: () => ({
+    scrolledToBottom: false
+  }),
   components: {Filters, Message, NewMessage },
   computed: {
     messagesAvailable: function() {
@@ -49,10 +52,22 @@ export default {
     this.requestMessages()
 
   },
+  mounted() {
+    this.scroll()
+  },
   methods: {
-    requestMessages(){
-      this.$store.dispatch("getMessageComments", this.$route.params.mId);
-    }
+    requestMessages(next=false){
+      this.$store.dispatch("getMessageComments", this.$route.params.mId,next);
+    },
+    scroll() {
+      window.onscroll = () => {
+        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+        if (bottomOfWindow) {
+          this.requestMessages(true);
+          console.log("bottom reached. loading next messages");
+        }
+      };
+    },
   },
   watch: {
     '$route.params.mId': function() {

@@ -8,13 +8,13 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn value="hot">
-          <v-icon left>mdi-arrow-up-bold</v-icon>
+          <v-icon left>mdi-fire</v-icon>
           Hot
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn value="top">
-          <v-icon left>mdi-heart</v-icon>
-          Like
+          <v-icon left>mdi-arrow-up-bold</v-icon>
+          Top
         </v-btn>
       </v-btn-toggle>
     </v-card-text>

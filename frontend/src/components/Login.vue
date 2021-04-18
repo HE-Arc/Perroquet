@@ -33,12 +33,10 @@
                     color="primary"
                     :disabled="!valid"
                 >Login
-                </v-btn
-                >
-                <v-spacer></v-spacer>
-                <router-link to="/signin">
-                  <v-btn>Sign in</v-btn>
-                </router-link>
+                </v-btn>
+                <v-btn class="ml-2" :to="'/signin'">
+                  Sign in
+                </v-btn>
                 <!--<router-link to="/passwordResetLink"><v-btn>Forgot your password?</v-btn></router-link>-->
               </v-col>
             </v-row>
