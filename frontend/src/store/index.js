@@ -31,6 +31,7 @@ const state = {
         "replyTo": null,
     },
     nextMessages: null,
+    darkMode: false
 }
 
 //to handle state
@@ -325,6 +326,9 @@ const actions = {
             })
         });
     },
+    toogleTheme({commit}, dark) {
+        commit("TOOGLETHEME", dark)
+    }
 }
 
 //to handle mutations
@@ -351,6 +355,9 @@ const mutations = {
                 };
             }
             state.userId = localStorage.getItem("userId")
+        }
+        if(localStorage.getItem('darkMode') != null){
+            state.darkMode = JSON.parse(localStorage.getItem('darkMode'))
         }
     },
     ADDPROFILE(state, profile) {
@@ -389,6 +396,10 @@ const mutations = {
     SETID(state, id) {
         state.userId = id;
         localStorage.setItem("userId", id);
+    },
+    TOOGLETHEME(state, dark) {
+        state.darkMode = dark
+        localStorage.setItem("darkMode", dark);
     }
 }
 

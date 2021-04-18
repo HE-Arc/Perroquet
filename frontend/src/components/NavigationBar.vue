@@ -3,6 +3,11 @@
     <v-app-bar dense app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-app-bar-title>Perroquet</v-app-bar-title>
+      <v-spacer></v-spacer>
+      <v-btn plain v-on:click="themeToogle()">
+        <span></span>
+        <v-icon class="ma-2">mdi-brightness-6</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app>
@@ -92,7 +97,13 @@ export default {
       return this.$store.state.userId
     }
 
-  }, mounted() {
+  }, methods: {
+    themeToogle() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+      this.$store.dispatch("toogleTheme", this.$vuetify.theme.dark)
+    }
+  },mounted() {
+    this.$vuetify.theme.dark = this.$store.state.darkMode
     if (this.$store.getters.authenticated) {
       var vm = this
       this.$store.dispatch("getProfile", this.$store.state.userId).then((p) => {
