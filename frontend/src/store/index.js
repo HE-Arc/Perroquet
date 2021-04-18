@@ -137,7 +137,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             axios.put(BASE_URL + "change_password/" + password.id + "/", {
                 password: password.new,
-                password2: password.new,
+                password2: password.new2,
                 old_password: password.old
             }).then(() => {
                 resolve();
