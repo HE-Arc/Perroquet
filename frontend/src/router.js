@@ -46,12 +46,20 @@ export default new Router({
     {
       path: "/signin",
       name: "Signin",
-      component: () => import("./components/Signin.vue")
+      component: () => import("./components/Signin.vue"),
+      beforeEnter: (to, from, next) => {
+        if(store.getters.authenticated) next({name: 'Discover'})
+        else next()
+      }
     },
     {
       path: "/login",
       name: "Login",
-      component: () => import("./components/Login.vue")
+      component: () => import("./components/Login.vue"),
+      beforeEnter: (to, from, next) => {
+        if(store.getters.authenticated) next({name: 'Discover'})
+        else next()
+      }
     },
     {
       path: "/passwordResetLink",

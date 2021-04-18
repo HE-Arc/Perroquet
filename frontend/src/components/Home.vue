@@ -20,6 +20,17 @@
         <message :message="message"></message>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <v-layout justify-center>
+        <v-progress-circular
+          v-if="loading"
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+        </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -31,7 +42,8 @@ import NewMessage from '@/components/NewMessage.vue';
 export default {
   name: "Home",
   data: () => ({
-    scrolledToBottom: false
+    scrolledToBottom: false,
+    loading: false
   }),
   components: {Filters, Message, NewMessage},
   computed: {
@@ -52,14 +64,15 @@ export default {
   },
   methods: {
     requestMessages(next = false) {
-      this.$store.dispatch("requestHome", next);
+      this.loading = true
+      var vm = this
+      this.$store.dispatch("requestHome", next).then(() =>{vm.loading = false});
     },
     scroll() {
       window.onscroll = () => {
         let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
         if (bottomOfWindow) {
           this.requestMessages(true);
-          console.log("bottom reached. loading next messages");
         }
       };
     },

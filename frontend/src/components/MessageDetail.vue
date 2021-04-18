@@ -64,7 +64,6 @@ export default {
         let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
         if (bottomOfWindow) {
           this.requestMessages(true);
-          console.log("bottom reached. loading next messages");
         }
       };
     },

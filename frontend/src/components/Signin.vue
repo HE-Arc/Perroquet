@@ -43,6 +43,18 @@
                 hint="At least 8 characters"
                 @click:append="show = !show"
             ></v-text-field>
+            <v-text-field
+                v-model="fields.password2"
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show ? 'text' : 'password'"
+                required
+                :rules="[
+                  v => !!v || 'Password is required',
+                  v => fields.password === v || 'Password must match'
+                ]"
+                label="Password confirmation"
+                @click:append="show = !show"
+            ></v-text-field>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -68,6 +80,7 @@ export default {
       username: "",
       email: "",
       password: "",
+      password2: "",
       firstname: "",
       lastname: "",
     },
@@ -87,6 +100,10 @@ export default {
         v => /(?=.*[A-Z])/.test(v) || 'Must have one uppercase character',
         v => /(?=.*\d)/.test(v) || 'Must have one number',
         v => /([-_!@$%+=])/.test(v) || 'Must have one special character [-_!@#$%+=]'
+      ],
+      passwordConfirmationRules: [
+        v => !!v || "Password is required",
+        v => this.fields.password === v || 'Password must match'
       ],
       nameRules: [
         v => !!v || 'Name is required',

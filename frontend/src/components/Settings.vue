@@ -44,6 +44,17 @@
                 hint="At least 8 characters"
                 @click:append="show = !show"
             ></v-text-field>
+            <v-text-field
+                v-model="fields.npassword2"
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show ? 'text' : 'password'"
+                required
+                :rules="[
+                  v => fields.npassword === v || 'Password must match'
+                ]"
+                label="New password confirmation"
+                @click:append="show = !show"
+            ></v-text-field>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -70,6 +81,7 @@ export default {
     fields: {
       email: "",
       npassword: "",
+      npassword2: "",
       opassword: "",
       firstname: "",
       lastname: "",
@@ -121,19 +133,22 @@ export default {
       ).catch(() => {
         vm.error = true
       });
-
-      this.$store.dispatch("changePassword", {
-        old: vm.fields.opassword,
-        new: vm.fields.npassword,
-        id: vm.profileId
-      }).then(
-          () => {
-            vm.fields.opassword = ""
-            vm.fields.npassword = ""
-          }
-      ).catch(() => {
-        vm.error = true
-      });
+      if(vm.fields.npassword != ""){
+        this.$store.dispatch("changePassword", {
+          old: vm.fields.opassword,
+          new: vm.fields.npassword,
+          new2: vm.fields.npassword2,
+          id: vm.profileId
+        }).then(
+            () => {
+              vm.fields.opassword = ""
+              vm.fields.npassword = ""
+              vm.fields.npassword2 = ""
+            }
+        ).catch(() => {
+          vm.error = true
+        });
+      }
     },
   },
   mounted() {

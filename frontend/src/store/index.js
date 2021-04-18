@@ -31,6 +31,7 @@ const state = {
         "replyTo": null,
     },
     nextMessages: null,
+    darkMode: false
 }
 
 //to handle state
@@ -73,7 +74,7 @@ const actions = {
                 {
                     username: fields.username,
                     password: fields.password,
-                    password2: fields.password,
+                    password2: fields.password2,
                     email: fields.email,
                     first_name: fields.firstname,
                     last_name: fields.lastname
@@ -136,7 +137,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             axios.put(BASE_URL + "change_password/" + password.id + "/", {
                 password: password.new,
-                password2: password.new,
+                password2: password.new2,
                 old_password: password.old
             }).then(() => {
                 resolve();
@@ -325,6 +326,9 @@ const actions = {
             })
         });
     },
+    toogleTheme({commit}, dark) {
+        commit("TOOGLETHEME", dark)
+    }
 }
 
 //to handle mutations
@@ -352,6 +356,9 @@ const mutations = {
             }
             state.userId = localStorage.getItem("userId")
         }
+        if(localStorage.getItem('darkMode') != null){
+            state.darkMode = JSON.parse(localStorage.getItem('darkMode'))
+        }
     },
     ADDPROFILE(state, profile) {
         state.profiles[profile.id] = profile;
@@ -363,7 +370,6 @@ const mutations = {
         state.filter = filter;
         state.nextMessages = null;
         state.messages=[];
-        console.log(state.messages)
     },
     MESSAGES(state, messages) {
         state.messages = messages;
@@ -374,7 +380,6 @@ const mutations = {
         state.message = message;
     },
     NEXTMESSAGES(state, nextUrl) {
-        console.log(nextUrl);
         if (nextUrl == null)
         {
             state.nextMessages=null;
@@ -386,12 +391,15 @@ const mutations = {
 
     },
     LOADNEXTMESSAGES(state, messages) {
-        console.log(messages);
         state.messages = state.messages.concat(messages);
     },
     SETID(state, id) {
         state.userId = id;
         localStorage.setItem("userId", id);
+    },
+    TOOGLETHEME(state, dark) {
+        state.darkMode = dark
+        localStorage.setItem("darkMode", dark);
     }
 }
 
