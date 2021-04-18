@@ -32,7 +32,7 @@
         <span class="pa-0 subtitle-2 font-weight-light">{{ new Date(message.date).toLocaleString()  }}</span>
 
       <v-spacer></v-spacer>
-      <v-btn plain v-on:click="like()">
+      <v-btn :disabled="!$store.getters.authenticated" plain v-on:click="like()">
         <span>{{ message.like_count }}</span>
         <v-icon class="ma-2">{{ likeIcon }}</v-icon>
       </v-btn>
