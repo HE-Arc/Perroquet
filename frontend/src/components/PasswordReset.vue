@@ -16,6 +16,18 @@
                 hint="At least 8 characters"
                 @click:append="show = !show"
             ></v-text-field>
+            <v-text-field
+                v-model="fields.password2"
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show ? 'text' : 'password'"
+                required
+                :rules="[
+                  v => !!v || 'Password is required',
+                  v => fields.password === v || 'Password must match'
+                ]"
+                label="Password confirmation"
+                @click:append="show = !show"
+            ></v-text-field>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -39,6 +51,7 @@ export default {
 
     fields: {
       password: "",
+      password2: "",
     },
     rules: {
       passwordRules: [
